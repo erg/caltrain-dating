@@ -1,18 +1,18 @@
-Initial User Stories 
+# Initial User Stories 
 
 1. User can setup a profile based on their facebook account
 
 The profile may include:
 
-gender
-age range
-language
-occupation
-education(?)
-lives in
-relationship status(?)
-Looking for
-Picture
+ * gender
+ * age range
+ * language
+ * occupation
+ * education(?)
+ * lives in
+ * relationship status(?)
+ * Looking for
+ * Picture
 
 2. User can save up to three caltrain riding routes based on the Caltrain timetable.
 
@@ -22,9 +22,9 @@ Picture
 
 5. User can look for dates on the same train he or she just checked in. User has three options to find dates:
 
-1) Based on simple profile matching (gender, age range, language, lives in, looking for)
-2) Select from a list of topics the user is interested at this time, such as sports, weather, technology, news, etc.
-3) Browse the other App users close to him or her (based on check in status and verfiy with LBS)
+ * Based on simple profile matching (gender, age range, language, lives in, looking for)
+ * Select from a list of topics the user is interested at this time, such as sports, weather, technology, news, etc.
+ * Browse the other App users close to him or her (based on check in status and verfiy with LBS)
 
 6. The user can view the basic profile of the potential, choose one and send out a dating request. Then the user wait for the other party to accept or deny. If the user does not get any response back in 2 minutes (or the other party sends out a "ignore" message within 2 minutes), the app will tell the user the other party may not be looking at their phone, or is not interested in a hang-out at this time. The user can continue look for more dates, with the exclusion of the already-requested one.
 
