@@ -1,0 +1,5 @@
+Dan - Facebook login w/ Parse
+
+Doug - Profiles
+
+Tristan - Chat
