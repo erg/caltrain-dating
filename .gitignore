@@ -25,3 +25,4 @@ logs
 *.swo
 *.so
 a.out
+bin/
