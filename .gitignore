@@ -26,3 +26,9 @@ logs
 *.so
 a.out
 bin/
+gen/
+*.dex
+*.class
+local.properties
+*.apk
+*.ap_
