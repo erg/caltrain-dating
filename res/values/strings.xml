@@ -6,5 +6,8 @@
     <string name="app_id">552729101490819</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="hello_world">Hello world!</string>
+    <string name="fbLogin">FB Login</string>
+    <string name="parseId">aqs7oI3BEXEXxaUpr8eRMFjASRtUUdErzg0LvY53</string>
+    <string name="parseKey">VHOa2jLezZiXLQuwJAAiiSm3yMq2ofcLSS1qZ8oK</string>
 
 </resources>
