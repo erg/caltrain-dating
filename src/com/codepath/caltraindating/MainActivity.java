@@ -22,7 +22,7 @@ import com.parse.Parse;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends FragmentActivity implements CheckinFragment.Listener {
 	
 	LoginFragment loginFragment;
 	CheckinFragment checkinFragment;
@@ -35,6 +35,7 @@ public class MainActivity extends FragmentActivity {
 		ParseFacebookUtils.initialize(getResources().getString(R.string.app_id));
 		loginFragment = new LoginFragment();
 		checkinFragment = new CheckinFragment();
+		checkinFragment.setListener(this);
 		Train.initSchedules(this);
 		
 		//helpful for finding your hashkey, keep here

@@ -1,5 +1,6 @@
 package com.codepath.caltraindating.models;
 
+import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 public class Checkin {
@@ -7,12 +8,26 @@ public class Checkin {
 	int destination;
 	long checkinTime;
 	long checkoutTime;
-	int train;
+	String train;
 	
-	public Checkin(ParseUser user,int train, int destination, Long checkinTime){
+	public Checkin(ParseUser user,String train, int destination, Long checkinTime){
 		if(checkinTime == null){
 			checkinTime = System.currentTimeMillis();
 		}
-		checkoutTime = Train.getArrivalTime(train, destination);
+		this.checkinTime = checkinTime;
+		this.checkoutTime = Train.getArrivalTime(train, destination);
+		this.train =  train;
+		this.user = user;
+		this.destination = destination;
+	}
+	
+	public void save(){
+		ParseObject checkin = new ParseObject("Checkin");
+		checkin.put("user",user);
+		checkin.put("destination",destination);
+		checkin.put("checkinTime",checkinTime);
+		checkin.put("checkoutTime",checkoutTime);
+		checkin.put("train",train);
+		checkin.saveInBackground();
 	}
 }

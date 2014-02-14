@@ -19,21 +19,69 @@ import com.codepath.caltraindating.R;
 
 public class Train {
 	
-	static final int numStations = 29;
 	static final String[] weekdayNorthTrains = {"305","313"};
 	static final String[] weekdaySouthTrains = {};
 	static final String[] weekendNorthTrains = {};
 	static final String[] weekendSouthTrains = {};
 	
-	static HashMap<String,ArrayList<Long>> weekdayNorthSchedule = new HashMap<String,ArrayList<Long>>();
-	static HashMap<String,ArrayList<Long>> weekdaySouthSchedule = new HashMap<String,ArrayList<Long>>();
-	static HashMap<String,ArrayList<Long>> weekendNorthSchedule = new HashMap<String,ArrayList<Long>>();
-	static HashMap<String,ArrayList<Long>> weekendSouthSchedule = new HashMap<String,ArrayList<Long>>();
+	static HashMap<String,ArrayList<Stop>> weekdayNorthSchedule = new HashMap<String,ArrayList<Stop>>();
+	static HashMap<String,ArrayList<Stop>> weekdaySouthSchedule = new HashMap<String,ArrayList<Stop>>();
+	static HashMap<String,ArrayList<Stop>> weekendNorthSchedule = new HashMap<String,ArrayList<Stop>>();
+	static HashMap<String,ArrayList<Stop>> weekendSouthSchedule = new HashMap<String,ArrayList<Stop>>();
 	static HashMap<Integer,String> trainIndex = new HashMap<Integer,String>();
+	static HashMap<Integer,String> stopNames = new HashMap<Integer,String>();
+	
+	static final int DEST_GILROY = 0;
+	static final int DEST_SANMARTIN = 1;
+	static final int DEST_MORGANHILL = 2;
+	static final int DEST_BLOSSOMHILL = 3;
+	static final int DEST_CAPITOL = 4;
+	static final int DEST_TAMIEN = 5;
+	static final int DEST_SANJOSE = 6;
+	static final int DEST_COLLEGEPARK = 7;
+	static final int DEST_SANTACLARA = 8;
+	static final int DEST_LAWRENCE = 9;
+	static final int DEST_SUNNYVALE = 10;
+	static final int DEST_MOUNTAINVIEW = 11;
+	static final int DEST_SANANTONIO = 12;
+	static final int DEST_CALIFORNIAAVE = 13;
+	static final int DEST_PALOALTO = 14;
+	static final int DEST_MENLOPARK = 15;
+	static final int DEST_REDWOODCITY = 16;
+	static final int DEST_SANCARLOS = 17;
+	static final int DEST_BELMONT = 18;
+	static final int DEST_HILLSDALE = 19;
+	static final int DEST_HAYWARDPARK = 20;
+	static final int DEST_SANMATEO = 21;
+	static final int DEST_BURLINGAME = 22;
+	static final int DEST_MILLBRAE = 23;
+	static final int DEST_SANBRUNO = 24;
+	static final int DEST_SOSANFRANCISCO = 25;
+	static final int DEST_BAYSHORE = 26;
+	static final int DEST_22STREET = 27;
+	static final int DEST_SANFRANCISCO = 28;
 	
 
-	public static long getArrivalTime(int train, int destination) {
-		return 0;
+	public static Long getArrivalTime(String train, int destination) {
+		ArrayList<Stop> times = getTrainTimes(train);
+		Stop s = times.get(destination);
+		if(s != null){
+			return s.getTimeMillis();
+		}else{
+			return null;
+		}
+	}
+	
+	public static ArrayList<Stop> getTrainTimes(String train){
+		if(weekdayNorthSchedule.containsKey(train)){
+			return weekdayNorthSchedule.get(train);
+		}else if(weekdaySouthSchedule.containsKey(train)){
+			return weekdaySouthSchedule.get(train);
+		}else if(weekendNorthSchedule.containsKey(train)){
+			return weekendNorthSchedule.get(train);
+		}else{
+			return weekendSouthSchedule.get(train);
+		}
 	}
 
 	
@@ -70,6 +118,7 @@ public class Train {
 		}
 	}
 
+
 	public static void initSchedules(Activity activity) {
 		InputStream is = activity.getResources().openRawResource(R.raw.shedules);
 	    BufferedReader br = new BufferedReader(new InputStreamReader(is));
@@ -83,26 +132,25 @@ public class Train {
 						String num = split[j];
 						trainIndex.put(j, num);
 						if(Arrays.asList(weekdayNorthTrains).contains(num)){
-							weekdayNorthSchedule.put(num, new ArrayList<Long>());
+							weekdayNorthSchedule.put(num, new ArrayList<Stop>());
 						}else if(Arrays.asList(weekdaySouthTrains).contains(num)){
-							weekdaySouthSchedule.put(num, new ArrayList<Long>());
+							weekdaySouthSchedule.put(num, new ArrayList<Stop>());
 						}else if(Arrays.asList(weekendNorthTrains).contains(num)){
-							weekendNorthSchedule.put(num, new ArrayList<Long>());
+							weekendNorthSchedule.put(num, new ArrayList<Stop>());
 						}else if(Arrays.asList(weekendSouthTrains).contains(num)){
-							weekendSouthSchedule.put(num, new ArrayList<Long>());
+							weekendSouthSchedule.put(num, new ArrayList<Stop>());
 						}
 					}
 				}else{
+					stopNames.put(i-1, split[0]);
 					for(int j=1;j<split.length;j++){
 						String num = trainIndex.get(j);
 						Long millis;
-						if(split[j].isEmpty() || split[j].equals("")){
-							millis = (long) 0;
-						}else{
-							Date target = getFutureDate(split[j]);
-							millis = target.getTime();
+						Date target = null;
+						if(!split[j].isEmpty() && !split[j].equals("")){
+							target = getFutureDate(split[j]);
 						}
-						ArrayList<Long> times;
+						ArrayList<Stop> times;
 						if(Arrays.asList(weekdayNorthTrains).contains(num)){
 							times = weekdayNorthSchedule.get(num);
 						}else if(Arrays.asList(weekdaySouthTrains).contains(num)){
@@ -112,9 +160,13 @@ public class Train {
 						}else{
 							times = weekendSouthSchedule.get(num);
 						}
-						times.add(millis);
+						if(target == null){
+							times.add(null);
+						}else{
+							times.add(new Stop(num,target));
+						}
+						
 					}
-
 				}
 				i++;
 			}
