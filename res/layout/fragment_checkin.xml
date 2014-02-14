@@ -4,13 +4,44 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/textView1"
+    <LinearLayout
+        android:id="@+id/llTrainNum"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
+        android:layout_marginTop="40dp"
+        android:gravity="center" >
+
+        <Spinner
+            android:id="@+id/spTrainNumber"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/btAddTrain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+" />
+
+    </LinearLayout>
+
+    <Spinner
+        android:id="@+id/spTrainStop"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/llTrainNum"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="139dp"
-        android:text="check in" />
+        android:layout_marginTop="30dp" />
+
+    <Button
+        android:id="@+id/btCheckIn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/spTrainStop"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:text="Check In" />
 
 </RelativeLayout>

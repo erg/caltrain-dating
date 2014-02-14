@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 
+import com.codepath.caltraindating.models.Train;
 import com.parse.LogInCallback;
 import com.parse.Parse;
 import com.parse.ParseFacebookUtils;
@@ -34,6 +35,7 @@ public class MainActivity extends FragmentActivity {
 		ParseFacebookUtils.initialize(getResources().getString(R.string.app_id));
 		loginFragment = new LoginFragment();
 		checkinFragment = new CheckinFragment();
+		Train.initSchedules(this);
 		
 		//helpful for finding your hashkey, keep here
 		try {
