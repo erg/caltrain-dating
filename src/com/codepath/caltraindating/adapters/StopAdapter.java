@@ -15,11 +15,15 @@ public class StopAdapter extends ArrayAdapter<Stop> {
 	
 	private Activity context;
 	ArrayList<Stop> data = null;
+	public static final int FORMAT_LONG=0;
+	public static final int FORMAT_TRAIN=1;
+	int format = FORMAT_LONG;
 
-	public StopAdapter(Activity context, int resource, ArrayList<Stop> data) {
+	public StopAdapter(Activity context, int resource, ArrayList<Stop> data, int format) {
 		super(context, resource, data);
 		this.context =context;
 		this.data = data;
+		this.format = format;
 	}
 	
 	@Override
@@ -32,7 +36,7 @@ public class StopAdapter extends ArrayAdapter<Stop> {
 	         LayoutInflater inflater = context.getLayoutInflater();
 	         row = inflater.inflate(android.R.layout.simple_spinner_dropdown_item, parent, false);
 	     }
-	     ((TextView) row).setText(data.get(position).getTrainStopTimePretty());
+	     ((TextView) row).setText(format(data.get(position)));
 
 	     return row;
 	 }
@@ -46,9 +50,18 @@ public class StopAdapter extends ArrayAdapter<Stop> {
 	         LayoutInflater inflater = context.getLayoutInflater();
 	         row = inflater.inflate(android.R.layout.simple_spinner_item, parent, false);
 	     }
-	     ((TextView) row).setText(data.get(position).getTrainStopTimePretty());
+	     ((TextView) row).setText(format(data.get(position)));
 
 	     return row;
+	}
+	
+	String format(Stop s){
+		if(format == FORMAT_LONG){
+			return s.getTrainStopTimePretty();
+		}else if(format == FORMAT_TRAIN){
+			return s.getTrain();
+		}
+		return s.getTrainStopTimePretty(); 
 	}
 	
 

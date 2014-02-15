@@ -34,6 +34,13 @@ public class Stop {
 		this.trainStopTimePretty = "#"+train+" ("+stopTimePretty+")";
 	}
 	
+	public boolean isTrainEqual(Stop s){
+		if (this.train.equalsIgnoreCase(s.getTrain())){
+			return true;
+		}
+		return false;
+	}
+	
 	public String getStopTimePretty() {
 		return stopTimePretty;
 	}
