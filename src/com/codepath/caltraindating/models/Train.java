@@ -30,6 +30,10 @@ public class Train {
 	static HashMap<String,ArrayList<Stop>> weekendSouthSchedule = new HashMap<String,ArrayList<Stop>>();
 	static HashMap<Integer,String> trainIndex = new HashMap<Integer,String>();
 	static HashMap<Integer,String> stopNames = new HashMap<Integer,String>();
+	public static ArrayList<String> stopNamesList = new ArrayList<String>();
+	
+	static ArrayList<Stop> allStops = new ArrayList<Stop>();
+	
 	
 	static final int DEST_GILROY = 0;
 	static final int DEST_SANMARTIN = 1;
@@ -72,6 +76,19 @@ public class Train {
 		}
 	}
 	
+	public static ArrayList<Stop> getStopsByTimePretty(Long timeWindow, Integer station){
+		ArrayList<Stop> ret = new ArrayList<Stop>();
+		Long now = new Date().getTime();
+		for(Stop s : allStops){
+			if ((station == null || s.stationId == station) && Math.abs(now - s.timeMillis) < timeWindow){
+				ret.add(s);
+			}
+		}
+		return ret;
+	}
+	
+
+	
 	public static ArrayList<Stop> getTrainTimes(String train){
 		if(weekdayNorthSchedule.containsKey(train)){
 			return weekdayNorthSchedule.get(train);
@@ -95,8 +112,9 @@ public class Train {
 		return c.getTime();
 	}
 	
-	public static Date incrementTime(Date d,int day, int hr, int min, int sec, int mil){
+	public static Date incrementTime(Date d, int hr, int min, int sec, int mil){
 		Calendar c = Calendar.getInstance();
+		c.setTime(d);
 		c.add(Calendar.HOUR, hr);
 		c.add(Calendar.MINUTE, min);
 		c.add(Calendar.SECOND, sec);
@@ -104,15 +122,21 @@ public class Train {
 		return c.getTime();
 	}
 	
+	public static String dateString(Date d){
+		Calendar c = Calendar.getInstance();
+		c.setTime(d);
+		return c.get(Calendar.HOUR_OF_DAY)+":"+c.get(Calendar.MINUTE);
+	}
+	
 	public static Date getFutureDate(String time24){
 		//takes a 24 hr string aka "14:15:16" and returns the date that matches the next time that time will happen
 		Date prevMid = setTime(new Date(),0,0,0,0);
 		String[] times = time24.split(":");
-		Date target = incrementTime(prevMid,0,Integer.valueOf(times[0]),Integer.valueOf(times[1]),Integer.valueOf(times[2]),0);
+		Date target = incrementTime(prevMid,Integer.valueOf(times[0]),Integer.valueOf(times[1]),Integer.valueOf(times[2]),0);
 		Date now = new Date();
 		if(now.after(target)){
 			//return target + 1 day
-			return incrementTime(target,24,0,0,0,0);
+			return incrementTime(target,24,0,0,0);
 		}else{
 			return target;
 		}
@@ -143,6 +167,7 @@ public class Train {
 					}
 				}else{
 					stopNames.put(i-1, split[0]);
+					stopNamesList.add(split[0]);
 					for(int j=1;j<split.length;j++){
 						String num = trainIndex.get(j);
 						Long millis;
@@ -163,7 +188,9 @@ public class Train {
 						if(target == null){
 							times.add(null);
 						}else{
-							times.add(new Stop(num,target));
+							Stop s = new Stop(num,target,split[0],i-1);
+							times.add(s);
+							allStops.add(s);
 						}
 						
 					}

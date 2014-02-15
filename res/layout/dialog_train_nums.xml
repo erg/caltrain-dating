@@ -3,22 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <Spinner
-        android:id="@+id/spDirPick"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp" />
-
-    <Spinner
-        android:id="@+id/spTrainPick"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/spDirPick"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="15dp" />
-
     <Button
         android:id="@+id/btTrainPick"
         android:layout_width="wrap_content"
@@ -26,5 +10,39 @@
         android:layout_below="@+id/spTrainPick"
         android:layout_centerHorizontal="true"
         android:text="Done" />
+
+    <TextView
+        android:id="@+id/tvStationPick"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="10dp"
+        android:text="Where did you get on?" />
+
+    <Spinner
+        android:id="@+id/spStationPick"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/tvStationPick"
+        android:layout_marginTop="10dp" />
+
+    <TextView
+        android:id="@+id/tvPickTrain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/spStationPick"
+        android:layout_marginTop="10dp"
+        android:text="What train did you  take?" />
+
+    <Spinner
+        android:id="@+id/spTrainPick"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/tvPickTrain"
+        android:layout_marginTop="10dp" />
 
 </RelativeLayout>
