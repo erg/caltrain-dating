@@ -15,7 +15,7 @@ public class Checkin {
 			checkinTime = System.currentTimeMillis();
 		}
 		this.checkinTime = checkinTime;
-		this.checkoutTime = Train.getArrivalTime(train, destination);
+		this.checkoutTime = Schedule.getArrivalTime(train, destination);
 		this.train =  train;
 		this.user = user;
 		this.destination = destination;

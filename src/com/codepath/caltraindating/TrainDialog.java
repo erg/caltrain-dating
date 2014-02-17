@@ -14,7 +14,7 @@ import android.widget.Spinner;
 
 import com.codepath.caltraindating.adapters.StopAdapter;
 import com.codepath.caltraindating.models.Stop;
-import com.codepath.caltraindating.models.Train;
+import com.codepath.caltraindating.models.Schedule;
 
 public class TrainDialog extends Dialog implements OnClickListener{
 	
@@ -49,7 +49,7 @@ public class TrainDialog extends Dialog implements OnClickListener{
 		done.setOnClickListener(this);
 		
 		Spinner trainPick = (Spinner)findViewById(R.id.spTrainPick);
-		final StopAdapter trainAdapter = new StopAdapter(context,android.R.layout.simple_spinner_item,Train.getStopsByTimePretty(timeWindow,null),StopAdapter.FORMAT_LONG);
+		final StopAdapter trainAdapter = new StopAdapter(context,android.R.layout.simple_spinner_item,Schedule.getStopsByTimePretty(timeWindow,null),StopAdapter.FORMAT_LONG);
 		trainPick.setAdapter(trainAdapter);
 		trainPick.setOnItemSelectedListener(new OnItemSelectedListener() {
 
@@ -68,7 +68,7 @@ public class TrainDialog extends Dialog implements OnClickListener{
 		
 		
 		Spinner stationPick = (Spinner)findViewById(R.id.spStationPick);
-		ArrayAdapter<String> stationAdapter = new ArrayAdapter<String>(context,android.R.layout.simple_spinner_item,Train.stopNamesList);
+		ArrayAdapter<String> stationAdapter = new ArrayAdapter<String>(context,android.R.layout.simple_spinner_item,Schedule.stopNamesList);
 		stationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		stationPick.setAdapter(stationAdapter);
 		stationPick.setOnItemSelectedListener(new OnItemSelectedListener() {
@@ -77,7 +77,7 @@ public class TrainDialog extends Dialog implements OnClickListener{
 			public void onItemSelected(AdapterView<?> parent, View v,
 					int pos, long id) {
 				trainAdapter.clear();
-				for(Stop s: Train.getStopsByTimePretty(timeWindow,pos)){
+				for(Stop s: Schedule.getStopsByTimePretty(timeWindow,pos)){
 					trainAdapter.add(s);
 				}
 			}

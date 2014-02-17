@@ -10,21 +10,16 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.codepath.caltraindating.models.Stop;
+import com.codepath.caltraindating.models.Train;
 
-public class StopAdapter extends ArrayAdapter<Stop> {
-	
+public class TrainAdapter extends ArrayAdapter<Train> {
 	private Activity context;
-	ArrayList<Stop> data = null;
-	public static final int FORMAT_LONG=0;
-	public static final int FORMAT_TRAIN=1;
-	public static final int FORMAT_NAME=2;
-	int format = FORMAT_LONG;
+	ArrayList<Train> data = null;
 
-	public StopAdapter(Activity context, int resource, ArrayList<Stop> data, int format) {
+	public TrainAdapter(Activity context, int resource, ArrayList<Train> data) {
 		super(context, resource, data);
 		this.context =context;
 		this.data = data;
-		this.format = format;
 	}
 	
 	@Override
@@ -37,7 +32,7 @@ public class StopAdapter extends ArrayAdapter<Stop> {
 	         LayoutInflater inflater = context.getLayoutInflater();
 	         row = inflater.inflate(android.R.layout.simple_spinner_dropdown_item, parent, false);
 	     }
-	     ((TextView) row).setText(format(data.get(position)));
+	     ((TextView) row).setText(data.get(position).getId());
 
 	     return row;
 	 }
@@ -51,22 +46,8 @@ public class StopAdapter extends ArrayAdapter<Stop> {
 	         LayoutInflater inflater = context.getLayoutInflater();
 	         row = inflater.inflate(android.R.layout.simple_spinner_item, parent, false);
 	     }
-	     ((TextView) row).setText(format(data.get(position)));
+	     ((TextView) row).setText(data.get(position).getId());
 
 	     return row;
 	}
-	
-	String format(Stop s){
-		if(format == FORMAT_LONG){
-			return s.getTrainStopTimePretty();
-		}else if(format == FORMAT_TRAIN){
-			return s.getTrain();
-		}else if(format == FORMAT_NAME){
-			return s.getStop();
-		}
-		return s.getTrainStopTimePretty(); 
-	}
-	
-
-
 }

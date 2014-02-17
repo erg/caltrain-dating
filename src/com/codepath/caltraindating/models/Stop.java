@@ -15,13 +15,15 @@ public class Stop {
 	String hour;
 	String minute;
 	String ampm;
+	boolean northBound;
 	int stationId;
 	
-	public Stop(String train, Date time, String stop, int stationId){
+	public Stop(String train, Date time, String stop, int stationId, boolean north){
 		this.train = train;
 		this.timeMillis = time.getTime();
 		this.dateTime = time;
 		this.stationId = stationId;
+		this.northBound = north;
 		Calendar c = Calendar.getInstance();
 		c.setTime(time);
 		hour =  (String) ((c.get(Calendar.HOUR)==0)?"12":Integer.toString(c.get(Calendar.HOUR)));
@@ -101,5 +103,21 @@ public class Stop {
 
 	public void setTimePretty(String timePretty) {
 		this.timePretty = timePretty;
+	}
+
+	public boolean isNorthBound() {
+		return northBound;
+	}
+
+	public void setNorthBound(boolean northBound) {
+		this.northBound = northBound;
+	}
+
+	public int getStationId() {
+		return stationId;
+	}
+
+	public void setStationId(int stationId) {
+		this.stationId = stationId;
 	}
 }

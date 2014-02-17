@@ -16,16 +16,19 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 
-import com.codepath.caltraindating.models.Train;
+import com.codepath.caltraindating.models.Schedule;
 import com.parse.LogInCallback;
 import com.parse.Parse;
+import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 public class MainActivity extends FragmentActivity implements CheckinFragment.Listener {
 	
 	LoginFragment loginFragment;
 	CheckinFragment checkinFragment;
+	ParseUser currentUser = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +39,7 @@ public class MainActivity extends FragmentActivity implements CheckinFragment.Li
 		loginFragment = new LoginFragment();
 		checkinFragment = new CheckinFragment();
 		checkinFragment.setListener(this);
-		Train.initSchedules(this);
+		Schedule.initSchedules(this);
 		
 		//helpful for finding your hashkey, keep here
 		try {
@@ -50,9 +53,25 @@ public class MainActivity extends FragmentActivity implements CheckinFragment.Li
 		    }
 		} catch (Exception e) {}
 		
-		ParseUser currentUser = ParseUser.getCurrentUser();
+		currentUser = ParseUser.getCurrentUser();
 		if (currentUser != null) {
 		  // do stuff with the user
+			/*try {
+				currentUser.save();
+				Log.e("tag","user saved");
+			} catch (ParseException e) {
+				Log.e("tag","user save error "+e.getMessage());
+			}*/
+			currentUser.saveInBackground(new SaveCallback() {
+				
+				@Override
+				public void done(ParseException arg0) {
+					Log.e("tag","user saved "+currentUser.getUpdatedAt());
+					if(arg0 != null){
+					Log.e("tag","save error: "+arg0.getMessage());
+					}
+				}
+			});
 			switchToFragment(checkinFragment);
 		} else {
 		  // show the signup or login screen
@@ -84,16 +103,24 @@ public class MainActivity extends FragmentActivity implements CheckinFragment.Li
 			  @Override
 			  public void done(ParseUser user, com.parse.ParseException err) {
 			    if (user == null) {
-			      Log.d("MyApp", "Uh oh. The user cancelled the Facebook login. "+err.getMessage());
+			      Log.d("tag", "Uh oh. The user cancelled the Facebook login. "+err.getMessage());
 			    } else if (user.isNew()) {
-			      Log.d("MyApp", "User signed up and logged in through Facebook!");
-			      switchToFragment(checkinFragment);
+			      Log.d("tag", "User signed up and logged in through Facebook!");
+			      user.saveInBackground();
+			      //switchToFragment(checkinFragment);
 			    } else {
-			      Log.d("MyApp", "User logged in through Facebook!");
-			      switchToFragment(checkinFragment);
+			      Log.d("tag", "User logged in through Facebook!");
+			      user.saveInBackground();
+			      //switchToFragment(checkinFragment);
 			    }
+			    Log.e("tag","user signed up: "+user.getObjectId());
 			  }
 			});
+	}
+
+	@Override
+	public ParseUser getUser() {
+		return currentUser;
 	}
 
 }

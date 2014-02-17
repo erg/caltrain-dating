@@ -1,207 +1,138 @@
 package com.codepath.caltraindating.models;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.List;
 
-import android.app.Activity;
 import android.util.Log;
 
-import com.codepath.caltraindating.R;
-
-
+import com.parse.FindCallback;
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 public class Train {
-	
-	static final String[] weekdayNorthTrains = {"305","313"};
-	static final String[] weekdaySouthTrains = {};
-	static final String[] weekendNorthTrains = {};
-	static final String[] weekendSouthTrains = {};
-	
-	static HashMap<String,ArrayList<Stop>> weekdayNorthSchedule = new HashMap<String,ArrayList<Stop>>();
-	static HashMap<String,ArrayList<Stop>> weekdaySouthSchedule = new HashMap<String,ArrayList<Stop>>();
-	static HashMap<String,ArrayList<Stop>> weekendNorthSchedule = new HashMap<String,ArrayList<Stop>>();
-	static HashMap<String,ArrayList<Stop>> weekendSouthSchedule = new HashMap<String,ArrayList<Stop>>();
-	static HashMap<Integer,String> trainIndex = new HashMap<Integer,String>();
-	static HashMap<Integer,String> stopNames = new HashMap<Integer,String>();
-	public static ArrayList<String> stopNamesList = new ArrayList<String>();
-	
-	static ArrayList<Stop> allStops = new ArrayList<Stop>();
-	
-	
-	static final int DEST_GILROY = 0;
-	static final int DEST_SANMARTIN = 1;
-	static final int DEST_MORGANHILL = 2;
-	static final int DEST_BLOSSOMHILL = 3;
-	static final int DEST_CAPITOL = 4;
-	static final int DEST_TAMIEN = 5;
-	static final int DEST_SANJOSE = 6;
-	static final int DEST_COLLEGEPARK = 7;
-	static final int DEST_SANTACLARA = 8;
-	static final int DEST_LAWRENCE = 9;
-	static final int DEST_SUNNYVALE = 10;
-	static final int DEST_MOUNTAINVIEW = 11;
-	static final int DEST_SANANTONIO = 12;
-	static final int DEST_CALIFORNIAAVE = 13;
-	static final int DEST_PALOALTO = 14;
-	static final int DEST_MENLOPARK = 15;
-	static final int DEST_REDWOODCITY = 16;
-	static final int DEST_SANCARLOS = 17;
-	static final int DEST_BELMONT = 18;
-	static final int DEST_HILLSDALE = 19;
-	static final int DEST_HAYWARDPARK = 20;
-	static final int DEST_SANMATEO = 21;
-	static final int DEST_BURLINGAME = 22;
-	static final int DEST_MILLBRAE = 23;
-	static final int DEST_SANBRUNO = 24;
-	static final int DEST_SOSANFRANCISCO = 25;
-	static final int DEST_BAYSHORE = 26;
-	static final int DEST_22STREET = 27;
-	static final int DEST_SANFRANCISCO = 28;
-	
 
-	public static Long getArrivalTime(String train, int destination) {
-		ArrayList<Stop> times = getTrainTimes(train);
-		Stop s = times.get(destination);
-		if(s != null){
-			return s.getTimeMillis();
-		}else{
-			return null;
-		}
+	String id;
+	ParseUser user;
+	int usualStop=-1;
+	int usualBoard=-1;
+	Date lastSelected = new Date();
+	static ArrayList<Train> recentTrains = new ArrayList<Train>();
+	
+	public Train(ParseUser user,String id){
+		this.user = user;
+		this.id = id;
 	}
 	
-	public static ArrayList<Stop> getStopsByTimePretty(Long timeWindow, Integer station){
-		ArrayList<Stop> ret = new ArrayList<Stop>();
-		Long now = new Date().getTime();
-		for(Stop s : allStops){
-			if ((station == null || s.stationId == station) && Math.abs(now - s.timeMillis) < timeWindow){
-				ret.add(s);
-			}
-		}
-		return ret;
+	public Train(ParseObject p){
+		id = p.getString("id");
+		user = p.getParseUser("user");
+		usualStop = p.getInt("usualStop");
+		usualBoard = p.getInt("usualBoard");
+		lastSelected = p.getDate("lastSelected");
 	}
 	
+	public boolean equals(Train t){
+		return this.id.equalsIgnoreCase(t.getId());
+	}
+	public boolean equals(Object t){
+		return this.id.equalsIgnoreCase(((Train)t).getId());
+	}
+	
+	public void save(){
+		final ParseObject train = new ParseObject("Train");
+		train.put("user",user);
+		train.put("id",id);
+		train.put("usualStop",usualStop);
+		train.put("usualBoard",usualBoard);
+		train.put("lastSelected", lastSelected);
+		
+		ParseQuery<ParseObject> query = ParseQuery.getQuery("Train");
+		query.whereEqualTo("user", user);
+		query.whereEqualTo("id", id);
+		query.findInBackground(new FindCallback<ParseObject>() {
+		    public void done(List<ParseObject> existing, ParseException e) {
+		        if (e == null) {
+		        	if(existing.size() == 1){
+		        		//update train
+		        		ParseObject ex = existing.get(0);
+		        		ex.put("usualStop",usualStop);
+		        		ex.put("usualBoard",usualBoard);
+		        		ex.put("lastSelected", lastSelected);
+		        		ex.saveInBackground();
+		        	}else if(existing.size() == 0){
+		        		//insert train
+		        		train.saveInBackground();
+		        	}
+		        } else {
+		            Log.d("score", "Error: " + e.getMessage());
+		        }
+		    }
 
-	
-	public static ArrayList<Stop> getTrainTimes(String train){
-		if(weekdayNorthSchedule.containsKey(train)){
-			return weekdayNorthSchedule.get(train);
-		}else if(weekdaySouthSchedule.containsKey(train)){
-			return weekdaySouthSchedule.get(train);
-		}else if(weekendNorthSchedule.containsKey(train)){
-			return weekendNorthSchedule.get(train);
-		}else{
-			return weekendSouthSchedule.get(train);
-		}
+		});
 	}
+	
+	
+	public static void getRecentTrains(ParseUser u, /*final FindCallback fc,*/ final Callback<ArrayList<Train>> cb){
+		ParseQuery<ParseObject> query = ParseQuery.getQuery("Train");
+		query.whereEqualTo("user", u);
+		query.orderByDescending("updatedAt");
+		query.findInBackground(new FindCallback<ParseObject>() {
+		    public void done(List<ParseObject> trains, ParseException e) {
+		        if (e == null) {
+		        	recentTrains.clear();
+		        	for (ParseObject p: trains){
+		        		recentTrains.add(new Train(p));
+		        	}
+		        	cb.complete(recentTrains);
+		        } else {
+		            Log.e("tag", "Error: " + e.getMessage());
+		        }
+		    }
 
-	
-	public static Date setTime(Date d,int hr, int min, int sec, int mil){
-		Calendar c = Calendar.getInstance();
-		c.setTime(d);
-		c.set(Calendar.HOUR_OF_DAY, hr);
-		c.set(Calendar.MINUTE, min);
-		c.set(Calendar.SECOND, sec);
-		c.set(Calendar.MILLISECOND, mil);
-		return c.getTime();
-	}
-	
-	public static Date incrementTime(Date d, int hr, int min, int sec, int mil){
-		Calendar c = Calendar.getInstance();
-		c.setTime(d);
-		c.add(Calendar.HOUR, hr);
-		c.add(Calendar.MINUTE, min);
-		c.add(Calendar.SECOND, sec);
-		c.add(Calendar.MILLISECOND, mil);
-		return c.getTime();
-	}
-	
-	public static String dateString(Date d){
-		Calendar c = Calendar.getInstance();
-		c.setTime(d);
-		return c.get(Calendar.HOUR_OF_DAY)+":"+c.get(Calendar.MINUTE);
-	}
-	
-	public static Date getFutureDate(String time24){
-		//takes a 24 hr string aka "14:15:16" and returns the date that matches the next time that time will happen
-		Date prevMid = setTime(new Date(),0,0,0,0);
-		String[] times = time24.split(":");
-		Date target = incrementTime(prevMid,Integer.valueOf(times[0]),Integer.valueOf(times[1]),Integer.valueOf(times[2]),0);
-		Date now = new Date();
-		if(now.after(target)){
-			//return target + 1 day
-			return incrementTime(target,24,0,0,0);
-		}else{
-			return target;
-		}
+		});
 	}
 
-
-	public static void initSchedules(Activity activity) {
-		InputStream is = activity.getResources().openRawResource(R.raw.shedules);
-	    BufferedReader br = new BufferedReader(new InputStreamReader(is));
-		String line = null;
-		int i = 0;
-		try{
-			while((line = br.readLine()) != null){
-				String[] split = line.split(",",-1);
-				if(i == 0){
-					for(int j=1;j<split.length;j++){
-						String num = split[j];
-						trainIndex.put(j, num);
-						if(Arrays.asList(weekdayNorthTrains).contains(num)){
-							weekdayNorthSchedule.put(num, new ArrayList<Stop>());
-						}else if(Arrays.asList(weekdaySouthTrains).contains(num)){
-							weekdaySouthSchedule.put(num, new ArrayList<Stop>());
-						}else if(Arrays.asList(weekendNorthTrains).contains(num)){
-							weekendNorthSchedule.put(num, new ArrayList<Stop>());
-						}else if(Arrays.asList(weekendSouthTrains).contains(num)){
-							weekendSouthSchedule.put(num, new ArrayList<Stop>());
-						}
-					}
-				}else{
-					stopNames.put(i-1, split[0]);
-					stopNamesList.add(split[0]);
-					for(int j=1;j<split.length;j++){
-						String num = trainIndex.get(j);
-						Long millis;
-						Date target = null;
-						if(!split[j].isEmpty() && !split[j].equals("")){
-							target = getFutureDate(split[j]);
-						}
-						ArrayList<Stop> times;
-						if(Arrays.asList(weekdayNorthTrains).contains(num)){
-							times = weekdayNorthSchedule.get(num);
-						}else if(Arrays.asList(weekdaySouthTrains).contains(num)){
-							times = weekdaySouthSchedule.get(num);
-						}else if(Arrays.asList(weekendNorthTrains).contains(num)){
-							times = weekendNorthSchedule.get(num);
-						}else{
-							times = weekendSouthSchedule.get(num);
-						}
-						if(target == null){
-							times.add(null);
-						}else{
-							Stop s = new Stop(num,target,split[0],i-1);
-							times.add(s);
-							allStops.add(s);
-						}
-						
-					}
-				}
-				i++;
-			}
-			is.close();
-			br.close();
-		}catch (IOException e){
-			e.printStackTrace();
-		}
+	public String getId() {
+		return id;
 	}
 
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public ParseUser getUser() {
+		return user;
+	}
+
+	public void setUser(ParseUser user) {
+		this.user = user;
+	}
+
+	public int getUsualStop() {
+		return usualStop;
+	}
+
+	public void setUsualStop(int usualStop) {
+		this.usualStop = usualStop;
+	}
+
+	public int getUsualBoard() {
+		return usualBoard;
+	}
+
+	public void setUsualBoard(int usualBoard) {
+		this.usualBoard = usualBoard;
+	}
+
+	public Date getLastSelected() {
+		return lastSelected;
+	}
+
+	public void setLastSelected(Date lastSelected) {
+		this.lastSelected = lastSelected;
+	}
 }
