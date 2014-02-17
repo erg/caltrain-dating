@@ -1,12 +1,10 @@
 package com.codepath.caltraindating;
 
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.Signature;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -54,27 +52,10 @@ public class MainActivity extends FragmentActivity implements CheckinFragment.Li
 		} catch (Exception e) {}
 		
 		currentUser = ParseUser.getCurrentUser();
+
 		if (currentUser != null) {
-		  // do stuff with the user
-			/*try {
-				currentUser.save();
-				Log.e("tag","user saved");
-			} catch (ParseException e) {
-				Log.e("tag","user save error "+e.getMessage());
-			}*/
-			currentUser.saveInBackground(new SaveCallback() {
-				
-				@Override
-				public void done(ParseException arg0) {
-					Log.e("tag","user saved "+currentUser.getUpdatedAt());
-					if(arg0 != null){
-					Log.e("tag","save error: "+arg0.getMessage());
-					}
-				}
-			});
 			switchToFragment(checkinFragment);
 		} else {
-		  // show the signup or login screen
 			switchToFragment(loginFragment);
 		}
 		
@@ -102,18 +83,18 @@ public class MainActivity extends FragmentActivity implements CheckinFragment.Li
 		ParseFacebookUtils.logIn(this, new LogInCallback() {
 			  @Override
 			  public void done(ParseUser user, com.parse.ParseException err) {
+				  currentUser = user;
 			    if (user == null) {
 			      Log.d("tag", "Uh oh. The user cancelled the Facebook login. "+err.getMessage());
 			    } else if (user.isNew()) {
 			      Log.d("tag", "User signed up and logged in through Facebook!");
-			      user.saveInBackground();
-			      //switchToFragment(checkinFragment);
+			      switchToFragment(checkinFragment);
 			    } else {
 			      Log.d("tag", "User logged in through Facebook!");
-			      user.saveInBackground();
-			      //switchToFragment(checkinFragment);
+			      switchToFragment(checkinFragment);
 			    }
 			    Log.e("tag","user signed up: "+user.getObjectId());
+			    
 			  }
 			});
 	}
