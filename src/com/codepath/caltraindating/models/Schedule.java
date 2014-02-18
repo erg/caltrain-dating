@@ -88,18 +88,58 @@ public class Schedule {
 	}
 	
 	public static ArrayList<Stop> getStopsAheadOfTrain(Train t, Date d){
+		Log.e("tag","get stops ahead of now: "+dateString(d));
 		ArrayList<Stop> ret = new ArrayList<Stop>();
-		Long millis = d.getTime();		
+		Long millis = d.getTime();	
+		Long maxTime = (long) (5*3600*1000);
 		ArrayList<Stop> trainStops = getTrainTimes(t.getId());
-		for( Stop s : trainStops){
-			if(s != null && millis < s.getTimeMillis()){
-				ret.add(s);
+		Stop prev = null;
+		int stopSize = trainStops.size();
+		if(isNorthBound(t.getId())){
+			int i = stopSize-1;
+			while(i > 0){
+				if(stopsAheadHelper(ret,trainStops,prev,millis,i)){
+					return ret;
+				}
+				i--;
+				
+			}
+		}else{
+			int i = 0;
+			while(i < stopSize){
+				if(stopsAheadHelper(ret,trainStops,prev,millis,i)){
+					return ret;
+				}
+				i++;
 			}
 		}
 		return ret;
 	}
 	
+	private static boolean stopsAheadHelper(ArrayList<Stop> ret, ArrayList<Stop> trainStops, Stop prev, Long millis, int i){
+		Long maxTime = (long) (5*3600*1000);
+		Stop stop = trainStops.get(i);
+		if(stop != null && prev != null && stop.getTimeMillis() > prev.getTimeMillis()){
+			return true;
+		}else if(stop != null  && stop.getTimeMillis() > millis && stop.getTimeMillis() < millis+maxTime){
+			ret.add(stop);
+			prev = stop;
+		}
+		return false;
+	}
+	
 
+	public static boolean isNorthBound(String train){
+		if(weekdayNorthSchedule.containsKey(train)){
+			return true;
+		}else if(weekdaySouthSchedule.containsKey(train)){
+			return false;
+		}else if(weekendNorthSchedule.containsKey(train)){
+			return true;
+		}else{
+			return false;
+		}
+	}
 	
 	public static ArrayList<Stop> getTrainTimes(String train){
 		if(weekdayNorthSchedule.containsKey(train)){
