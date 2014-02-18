@@ -1,8 +1,7 @@
 package com.codepath.caltraindating;
 
+
 import java.security.MessageDigest;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -14,19 +13,14 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
-import android.view.View;
 
 import com.codepath.caltraindating.models.Schedule;
 import com.codepath.caltraindating.models.Train;
-import com.facebook.Request;
-import com.facebook.Response;
-import com.facebook.model.GraphUser;
-import com.parse.LogInCallback;
 import com.parse.Parse;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
 
-public class MainActivity extends FragmentActivity implements CheckinFragment.Listener, RidersFragment.Listener {
+public class MainActivity extends FragmentActivity implements CheckinFragment.Listener, RidersFragment.Listener, LoginFragment.Listener {
 	
 	LoginFragment loginFragment;
 	CheckinFragment checkinFragment;
@@ -44,6 +38,7 @@ public class MainActivity extends FragmentActivity implements CheckinFragment.Li
 		ridersFragment = new RidersFragment();
 		checkinFragment.setListener(this);
 		ridersFragment.setListener(this);
+		loginFragment.setListener(this);
 		Schedule.initSchedules(this);
 		
 		//helpful for finding your hashkey, keep here
@@ -61,6 +56,7 @@ public class MainActivity extends FragmentActivity implements CheckinFragment.Li
 		currentUser = ParseUser.getCurrentUser();
 
 		if (currentUser != null) {
+			loginFragment.getFacebookDataInBackground(false);
 			switchToFragment(checkinFragment);
 		} else {
 			switchToFragment(loginFragment);
@@ -86,39 +82,7 @@ public class MainActivity extends FragmentActivity implements CheckinFragment.Li
 	  ParseFacebookUtils.finishAuthentication(requestCode, resultCode, data);
 	}
 	
-	public void fbLogin(View v){
-		String[] params = {"user_birthday","user_photos"};
-		ParseFacebookUtils.logIn(Arrays.asList(params),this, new LogInCallback() {
-			  @Override
-			  public void done(ParseUser user, com.parse.ParseException err) {
-				  currentUser = user;
-			    if (user == null) {
-			      Log.d("tag", "Uh oh. The user cancelled the Facebook login. "+err.getMessage());
-			      return;
-			    }
-			    Log.d("tag","user signed up: "+user.getObjectId());
-			    getFacebookDataInBackground();
-			  }
-			});
-	}
 	
-	private void getFacebookDataInBackground() {
-		Request.newMeRequest(ParseFacebookUtils.getSession(), new Request.GraphUserCallback() {
-		    @Override
-		    public void onCompleted(GraphUser user, Response response) {
-		      if (user != null) {
-		        currentUser.put("fbId", user.getId());
-		        currentUser.put("firstName", user.getFirstName());
-		        currentUser.put("lastName", user.getLastName());
-		        currentUser.put("birthday", user.getBirthday());
-		        currentUser.saveInBackground();
-		        switchToFragment(checkinFragment);
-		      }else{
-		    	  Log.e("tag", "error getting facebook data");
-		      }
-		    }
-		  }).executeAsync();
-		}
 
 	@Override
 	public ParseUser getUser() {
@@ -129,6 +93,16 @@ public class MainActivity extends FragmentActivity implements CheckinFragment.Li
 	public void checkedIn(Train train) {
 		ridersFragment.setCurrentTrain(train);
 		switchToFragment(ridersFragment);
+	}
+
+	@Override
+	public void setUser(ParseUser u) {
+		currentUser = u;
+	}
+
+	@Override
+	public void fbDataUpdated() {
+		switchToFragment(checkinFragment);
 	}
 
 }
