@@ -1,6 +1,8 @@
 package com.codepath.caltraindating;
 
 import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -15,17 +17,20 @@ import android.view.Menu;
 import android.view.View;
 
 import com.codepath.caltraindating.models.Schedule;
+import com.codepath.caltraindating.models.Train;
+import com.facebook.Request;
+import com.facebook.Response;
+import com.facebook.model.GraphUser;
 import com.parse.LogInCallback;
 import com.parse.Parse;
-import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
 
-public class MainActivity extends FragmentActivity implements CheckinFragment.Listener {
+public class MainActivity extends FragmentActivity implements CheckinFragment.Listener, RidersFragment.Listener {
 	
 	LoginFragment loginFragment;
 	CheckinFragment checkinFragment;
+	RidersFragment ridersFragment;
 	ParseUser currentUser = null;
 
 	@Override
@@ -36,7 +41,9 @@ public class MainActivity extends FragmentActivity implements CheckinFragment.Li
 		ParseFacebookUtils.initialize(getResources().getString(R.string.app_id));
 		loginFragment = new LoginFragment();
 		checkinFragment = new CheckinFragment();
+		ridersFragment = new RidersFragment();
 		checkinFragment.setListener(this);
+		ridersFragment.setListener(this);
 		Schedule.initSchedules(this);
 		
 		//helpful for finding your hashkey, keep here
@@ -80,28 +87,48 @@ public class MainActivity extends FragmentActivity implements CheckinFragment.Li
 	}
 	
 	public void fbLogin(View v){
-		ParseFacebookUtils.logIn(this, new LogInCallback() {
+		String[] params = {"user_birthday","user_photos"};
+		ParseFacebookUtils.logIn(Arrays.asList(params),this, new LogInCallback() {
 			  @Override
 			  public void done(ParseUser user, com.parse.ParseException err) {
 				  currentUser = user;
 			    if (user == null) {
 			      Log.d("tag", "Uh oh. The user cancelled the Facebook login. "+err.getMessage());
-			    } else if (user.isNew()) {
-			      Log.d("tag", "User signed up and logged in through Facebook!");
-			      switchToFragment(checkinFragment);
-			    } else {
-			      Log.d("tag", "User logged in through Facebook!");
-			      switchToFragment(checkinFragment);
+			      return;
 			    }
-			    Log.e("tag","user signed up: "+user.getObjectId());
-			    
+			    Log.d("tag","user signed up: "+user.getObjectId());
+			    getFacebookDataInBackground();
 			  }
 			});
 	}
+	
+	private void getFacebookDataInBackground() {
+		Request.newMeRequest(ParseFacebookUtils.getSession(), new Request.GraphUserCallback() {
+		    @Override
+		    public void onCompleted(GraphUser user, Response response) {
+		      if (user != null) {
+		        currentUser.put("fbId", user.getId());
+		        currentUser.put("firstName", user.getFirstName());
+		        currentUser.put("lastName", user.getLastName());
+		        currentUser.put("birthday", user.getBirthday());
+		        currentUser.saveInBackground();
+		        switchToFragment(checkinFragment);
+		      }else{
+		    	  Log.e("tag", "error getting facebook data");
+		      }
+		    }
+		  }).executeAsync();
+		}
 
 	@Override
 	public ParseUser getUser() {
 		return currentUser;
+	}
+
+	@Override
+	public void checkedIn(Train train) {
+		ridersFragment.setCurrentTrain(train);
+		switchToFragment(ridersFragment);
 	}
 
 }

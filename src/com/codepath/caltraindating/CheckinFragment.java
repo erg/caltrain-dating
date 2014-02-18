@@ -43,6 +43,7 @@ public class CheckinFragment extends Fragment implements OnClickListener, TrainD
 	
 	public interface Listener{
 		ParseUser getUser();
+		void checkedIn(Train train);
 	}
 
 	@Override
@@ -127,6 +128,7 @@ public class CheckinFragment extends Fragment implements OnClickListener, TrainD
 		currentTrain.save();
 		Checkin c = new Checkin(listener.getUser(), currentTrain.getId(), currentTrain.getUsualStop(), now.getTime());
 		c.save();
+		listener.checkedIn(currentTrain);
 	}
 	
 	private void initRecentTrains(){

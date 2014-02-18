@@ -102,7 +102,6 @@ public class Schedule {
 					return ret;
 				}
 				i--;
-				
 			}
 		}else{
 			int i = 0;
