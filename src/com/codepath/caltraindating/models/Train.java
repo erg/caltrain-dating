@@ -27,6 +27,15 @@ public class Train {
 		this.id = id;
 	}
 	
+	public static int indexOfUsualStop(ArrayList<Stop> stops, Train train){
+		for(int i=0;i<stops.size();i++){
+			if(train.usualStop == stops.get(i).getStationId()){
+				return i;
+			}
+		}
+		return 0;
+	}
+	
 	public Train(ParseObject p){
 		id = p.getString("id");
 		user = p.getParseUser("user");

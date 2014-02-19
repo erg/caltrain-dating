@@ -116,8 +116,10 @@ public class CheckinFragment extends Fragment implements OnClickListener, TrainD
 	private void updateStations(){
 		if(currentTrain != null){
 			trainStations.clear();
-			trainStations.addAll(Schedule.getStopsAheadOfTrain(currentTrain, Schedule.getNow()));
+			ArrayList<Stop> stopsAhead = Schedule.getStopsAheadOfTrain(currentTrain, Schedule.getNow());
+			trainStations.addAll(stopsAhead);
 			stationAdapter.notifyDataSetChanged();
+			trainStops.setSelection(Train.indexOfUsualStop(stopsAhead, currentTrain));
 		}
 	}
 
