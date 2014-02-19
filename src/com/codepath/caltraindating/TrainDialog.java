@@ -19,7 +19,7 @@ import com.codepath.caltraindating.models.Schedule;
 public class TrainDialog extends Dialog implements OnClickListener{
 	
 	Activity context;
-	final Long timeWindow = (long) 3600000*24;
+	final Long timeWindow = (long) 3600000/2;
 	Listener listener = null;
 	Button done;
 	Stop selected = null;
@@ -48,7 +48,7 @@ public class TrainDialog extends Dialog implements OnClickListener{
 		done = (Button)findViewById(R.id.btTrainPick);
 		done.setOnClickListener(this);
 		
-		Spinner trainPick = (Spinner)findViewById(R.id.spTrainPick);
+		final Spinner trainPick = (Spinner)findViewById(R.id.spTrainPick);
 		final StopAdapter trainAdapter = new StopAdapter(context,android.R.layout.simple_spinner_item,Schedule.getStopsByTimePretty(timeWindow,null),StopAdapter.FORMAT_LONG);
 		trainPick.setAdapter(trainAdapter);
 		trainPick.setOnItemSelectedListener(new OnItemSelectedListener() {
@@ -80,6 +80,7 @@ public class TrainDialog extends Dialog implements OnClickListener{
 				for(Stop s: Schedule.getStopsByTimePretty(timeWindow,pos)){
 					trainAdapter.add(s);
 				}
+				selected = (Stop) trainPick.getSelectedItem();
 			}
 
 			@Override
@@ -88,6 +89,7 @@ public class TrainDialog extends Dialog implements OnClickListener{
 				
 			}
 		});
+		selected = (Stop) trainPick.getSelectedItem();
 		
 	}
 	@Override

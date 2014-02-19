@@ -19,7 +19,7 @@ import com.codepath.caltraindating.R;
 
 public class Schedule {
 	
-	static final String[] weekdayNorthTrains = {"305","313"};
+	static final String[] weekdayNorthTrains = {"305","313","207","309","211","313","215","217","319","221","323","225","227","329"};
 	static final String[] weekdaySouthTrains = {};
 	static final String[] weekendNorthTrains = {};
 	static final String[] weekendSouthTrains = {};
@@ -34,37 +34,6 @@ public class Schedule {
 	
 	static ArrayList<Stop> allStops = new ArrayList<Stop>();
 	
-	
-	static final int DEST_GILROY = 0;
-	static final int DEST_SANMARTIN = 1;
-	static final int DEST_MORGANHILL = 2;
-	static final int DEST_BLOSSOMHILL = 3;
-	static final int DEST_CAPITOL = 4;
-	static final int DEST_TAMIEN = 5;
-	static final int DEST_SANJOSE = 6;
-	static final int DEST_COLLEGEPARK = 7;
-	static final int DEST_SANTACLARA = 8;
-	static final int DEST_LAWRENCE = 9;
-	static final int DEST_SUNNYVALE = 10;
-	static final int DEST_MOUNTAINVIEW = 11;
-	static final int DEST_SANANTONIO = 12;
-	static final int DEST_CALIFORNIAAVE = 13;
-	static final int DEST_PALOALTO = 14;
-	static final int DEST_MENLOPARK = 15;
-	static final int DEST_REDWOODCITY = 16;
-	static final int DEST_SANCARLOS = 17;
-	static final int DEST_BELMONT = 18;
-	static final int DEST_HILLSDALE = 19;
-	static final int DEST_HAYWARDPARK = 20;
-	static final int DEST_SANMATEO = 21;
-	static final int DEST_BURLINGAME = 22;
-	static final int DEST_MILLBRAE = 23;
-	static final int DEST_SANBRUNO = 24;
-	static final int DEST_SOSANFRANCISCO = 25;
-	static final int DEST_BAYSHORE = 26;
-	static final int DEST_22STREET = 27;
-	static final int DEST_SANFRANCISCO = 28;
-	
 
 	public static Long getArrivalTime(String train, int destination) {
 		ArrayList<Stop> times = getTrainTimes(train);
@@ -78,13 +47,25 @@ public class Schedule {
 	
 	public static ArrayList<Stop> getStopsByTimePretty(Long timeWindow, Integer station){
 		ArrayList<Stop> ret = new ArrayList<Stop>();
-		Long now = new Date().getTime();
+		Long now = getNow().getTime();
+		Long hours24 = (long) (3600000*24);
 		for(Stop s : allStops){
-			if ((station == null || s.stationId == station) && Math.abs(now - s.timeMillis) < timeWindow){
+			if ((station == null || s.stationId == station) && (now + timeWindow > s.timeMillis  || s.timeMillis - now - hours24 + timeWindow > 0)){
 				ret.add(s);
 			}
 		}
 		return ret;
+	}
+	
+	public static Date getNow(){
+		//return new Date();
+		//simulates a 7 am-ish checkin
+		Date d = new Date();
+		Calendar c = Calendar.getInstance();
+		c.setTime(d);
+		c.set(Calendar.HOUR, 7);
+		c.set(Calendar.AM_PM, Calendar.AM);
+		return c.getTime();
 	}
 	
 	public static ArrayList<Stop> getStopsAheadOfTrain(Train t, Date d){
@@ -98,33 +79,29 @@ public class Schedule {
 		if(isNorthBound(t.getId())){
 			int i = stopSize-1;
 			while(i > 0){
-				if(stopsAheadHelper(ret,trainStops,prev,millis,i)){
+				Stop stop = trainStops.get(i);
+				if(stop != null && prev != null && stop.getTimeMillis() > prev.getTimeMillis()){
 					return ret;
+				}else if(stop != null  && stop.getTimeMillis() > millis && stop.getTimeMillis() < millis+maxTime){
+					ret.add(stop);
+					prev = stop;
 				}
 				i--;
 			}
 		}else{
 			int i = 0;
 			while(i < stopSize){
-				if(stopsAheadHelper(ret,trainStops,prev,millis,i)){
+				Stop stop = trainStops.get(i);
+				if(stop != null && prev != null && stop.getTimeMillis() > prev.getTimeMillis()){
 					return ret;
+				}else if(stop != null  && stop.getTimeMillis() > millis && stop.getTimeMillis() < millis+maxTime){
+					ret.add(stop);
+					prev = stop;
 				}
 				i++;
 			}
 		}
 		return ret;
-	}
-	
-	private static boolean stopsAheadHelper(ArrayList<Stop> ret, ArrayList<Stop> trainStops, Stop prev, Long millis, int i){
-		Long maxTime = (long) (5*3600*1000);
-		Stop stop = trainStops.get(i);
-		if(stop != null && prev != null && stop.getTimeMillis() > prev.getTimeMillis()){
-			return true;
-		}else if(stop != null  && stop.getTimeMillis() > millis && stop.getTimeMillis() < millis+maxTime){
-			ret.add(stop);
-			prev = stop;
-		}
-		return false;
 	}
 	
 
@@ -176,15 +153,15 @@ public class Schedule {
 	public static String dateString(Date d){
 		Calendar c = Calendar.getInstance();
 		c.setTime(d);
-		return c.get(Calendar.HOUR_OF_DAY)+":"+c.get(Calendar.MINUTE);
+		return c.get(Calendar.DAY_OF_MONTH)+" -- "+c.get(Calendar.HOUR_OF_DAY)+":"+c.get(Calendar.MINUTE);
 	}
 	
 	public static Date getFutureDate(String time24){
 		//takes a 24 hr string aka "14:15:16" and returns the date that matches the next time that time will happen
-		Date prevMid = setTime(new Date(),0,0,0,0);
+		Date prevMid = setTime(getNow(),0,0,0,0);
 		String[] times = time24.split(":");
 		Date target = incrementTime(prevMid,Integer.valueOf(times[0]),Integer.valueOf(times[1]),Integer.valueOf(times[2]),0);
-		Date now = new Date();
+		Date now = getNow();
 		if(now.after(target)){
 			//return target + 1 day
 			return incrementTime(target,24,0,0,0);
@@ -195,12 +172,13 @@ public class Schedule {
 
 
 	public static void initSchedules(Activity activity) {
-		InputStream is = activity.getResources().openRawResource(R.raw.shedules);
+		InputStream is = activity.getResources().openRawResource(R.raw.schedules);
 	    BufferedReader br = new BufferedReader(new InputStreamReader(is));
 		String line = null;
 		int i = 0;
 		try{
 			while((line = br.readLine()) != null){
+				//Log.e("tag","line: "+line);
 				String[] split = line.split(",",-1);
 				if(i == 0){
 					for(int j=1;j<split.length;j++){

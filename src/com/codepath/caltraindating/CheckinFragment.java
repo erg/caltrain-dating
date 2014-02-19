@@ -72,9 +72,7 @@ public class CheckinFragment extends Fragment implements OnClickListener, TrainD
 			public void onItemSelected(AdapterView<?> parent, View v,
 					int pos, long id) {
 				currentTrain = (Train) parent.getItemAtPosition(pos);
-				trainStations.clear();
-				trainStations.addAll(Schedule.getStopsAheadOfTrain(currentTrain, new Date()));
-				stationAdapter.notifyDataSetChanged();
+				updateStations();
 			}
 
 			@Override
@@ -104,12 +102,23 @@ public class CheckinFragment extends Fragment implements OnClickListener, TrainD
 		
 		checkIn.setOnClickListener(this);
 		
+		currentTrain = (Train) trainNumbers.getSelectedItem();
+		updateStations();
+		
 		return v;
 		
 	}
 	
 	public void setListener(Listener l){
 		this.listener = l;
+	}
+	
+	private void updateStations(){
+		if(currentTrain != null){
+			trainStations.clear();
+			trainStations.addAll(Schedule.getStopsAheadOfTrain(currentTrain, Schedule.getNow()));
+			stationAdapter.notifyDataSetChanged();
+		}
 	}
 
 	@Override
@@ -123,7 +132,7 @@ public class CheckinFragment extends Fragment implements OnClickListener, TrainD
 	}
 	
 	private void checkIn(){
-		Date now = new Date();
+		Date now = Schedule.getNow();
 		currentTrain.setLastSelected(now);
 		currentTrain.save();
 		Checkin c = new Checkin(listener.getUser(), currentTrain.getId(), currentTrain.getUsualStop(), now.getTime());
@@ -172,5 +181,6 @@ public class CheckinFragment extends Fragment implements OnClickListener, TrainD
 	public void onStopSelected(Stop s) {
 		currentTrain = new Train(listener.getUser(),s.getTrain());
 		insertRecentTrain(currentTrain);
+		updateStations();
 	}
 }

@@ -1,7 +1,6 @@
 package com.codepath.caltraindating;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.codepath.caltraindating.models.Callback;
 import com.codepath.caltraindating.models.Checkin;
+import com.codepath.caltraindating.models.Schedule;
 import com.codepath.caltraindating.models.Train;
 import com.parse.ParseUser;
 
@@ -33,7 +33,7 @@ public class RidersFragment extends Fragment{
 	}
 	
 	private void loadRiders(Train t){
-		Checkin.getCheckins(listener.getUser(), currentTrain, new Date(), new Callback<ArrayList<Checkin>>(){
+		Checkin.getCheckins(listener.getUser(), currentTrain, Schedule.getNow(), new Callback<ArrayList<Checkin>>(){
 			@Override
 			public void complete(ArrayList<Checkin> checkins) {
 				for(Checkin c: checkins){

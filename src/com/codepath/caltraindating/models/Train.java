@@ -19,7 +19,7 @@ public class Train {
 	ParseUser user;
 	int usualStop=-1;
 	int usualBoard=-1;
-	Date lastSelected = new Date();
+	Date lastSelected = Schedule.getNow();
 	static ArrayList<Train> recentTrains = new ArrayList<Train>();
 	
 	public Train(ParseUser user,String id){
