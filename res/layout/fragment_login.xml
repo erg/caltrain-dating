@@ -1,14 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/com.codepath.caltraindating"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <Button
-        android:id="@+id/btLogin"
+    <RelativeLayout
+        android:id="@+id/relativeLayout1"
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:background="#CC0032" >
+
+        <RelativeLayout
+            android:id="@+id/relativeLayout2"
+            android:layout_width="100dp"
+            android:layout_height="2dp"
+            android:layout_alignBottom="@+id/tvLoginTitle"
+            android:layout_alignLeft="@+id/tvLoginTag"
+            android:layout_alignRight="@+id/tvLoginTag"
+            android:background="#EEEEEE" >
+        </RelativeLayout>
+
+        <com.codepath.caltraindating.TextViewPlus
+            android:id="@+id/tvLoginTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="50dp"
+            android:text="Caltrix"
+            app:customFont="fonts/Roboto-BoldItalic.ttf"
+            android:textColor="#EEEEEE"
+            android:textSize="48sp" />
+
+        <com.codepath.caltraindating.TextViewPlus
+            android:id="@+id/tvLoginTag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/tvLoginTitle"
+            android:layout_alignTop="@+id/relativeLayout2"
+            android:layout_marginLeft="38dp"
+            android:text="Meet on the Train"
+            android:textColor="#EEEEEE"
+            android:textSize="18sp"
+            app:customFont="fonts/Roboto-Light.ttf" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="@string/fbLogin" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/relativeLayout1"
+        android:background="#EEEEEE" >
+
+        <Button
+            android:id="@+id/btLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:textColor="#EEEEEE"
+            android:textStyle="bold"
+            android:background="@drawable/fb_button"
+            android:text="@string/fbLogin" />
+    </RelativeLayout>
 
 </RelativeLayout>

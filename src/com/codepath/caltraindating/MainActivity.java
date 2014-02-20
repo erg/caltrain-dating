@@ -3,16 +3,20 @@ package com.codepath.caltraindating;
 
 import java.security.MessageDigest;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
+import android.widget.TextView;
 
 import com.codepath.caltraindating.fragments.CheckinFragment;
 import com.codepath.caltraindating.fragments.LoginFragment;
@@ -58,7 +62,7 @@ public class MainActivity extends FragmentActivity implements CheckinFragment.Li
 		
 		currentUser = ParseUser.getCurrentUser();
 
-		if (currentUser != null) {
+		if (currentUser != null && false) {
 			loginFragment.getFacebookDataInBackground(false);
 			switchToFragment(checkinFragment);
 		} else {
