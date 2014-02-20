@@ -4,36 +4,61 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <LinearLayout
-        android:id="@+id/llTrainNum"
+    
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingBottom="40dp"
         android:layout_alignParentLeft="true"
+       	style="@style/bgRed"
         android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="40dp"
-        android:gravity="center" >
+        android:layout_alignParentTop="true" >
 
-        <Spinner
-            android:id="@+id/spTrainNumber"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content" />
-
-        <Button
-            android:id="@+id/btAddTrain"
+        <LinearLayout
+            android:id="@+id/llTrainNum"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="+" />
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="10dp"
+            android:layout_below="@+id/tvCheckinTrain"
+            android:gravity="center" >
 
-    </LinearLayout>
+            <Spinner
+                android:id="@+id/spTrainNumber"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content" />
 
-    <Spinner
-        android:id="@+id/spTrainStop"
-        android:layout_width="200dp"
+            <Button
+                android:id="@+id/btAddTrain"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvCheckinTrain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            style="@style/questionText"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:text="What train are you on?" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/llTrainNum"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        style="@style/bgGrey"
+        android:layout_below="@+id/relativeLayout1" >
 
     <Button
         android:id="@+id/btCheckIn"
@@ -43,5 +68,26 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
         android:text="Check In" />
+
+    <TextView
+        android:id="@+id/tvCheckinStop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        style="@style/questionText"
+        android:text="Where are you getting off?" />
+
+    <Spinner
+        android:id="@+id/spTrainStop"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvCheckinStop"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp" />
+
+    </RelativeLayout>
 
 </RelativeLayout>

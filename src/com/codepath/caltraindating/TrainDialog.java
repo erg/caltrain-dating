@@ -1,11 +1,12 @@
 package com.codepath.caltraindating;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.app.DialogFragment;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -13,12 +14,11 @@ import android.widget.Button;
 import android.widget.Spinner;
 
 import com.codepath.caltraindating.adapters.StopAdapter;
-import com.codepath.caltraindating.models.Stop;
 import com.codepath.caltraindating.models.Schedule;
+import com.codepath.caltraindating.models.Stop;
 
-public class TrainDialog extends Dialog implements OnClickListener{
+public class TrainDialog extends DialogFragment implements OnClickListener{
 	
-	Activity context;
 	final Long timeWindow = (long) 3600000/2;
 	Listener listener = null;
 	Button done;
@@ -28,28 +28,21 @@ public class TrainDialog extends Dialog implements OnClickListener{
 	public interface Listener {
 		public void onStopSelected(Stop s);
 	}
-	public TrainDialog(Activity context) {
-		super(context);
-		this.context = context;
-	}
-	public TrainDialog(Activity context, Listener l){
-		super(context);
-		this.context = context;
-		listener = l;
-	}
 	
+	public TrainDialog(){
+	}
+
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		View v = inflater.inflate(R.layout.dialog_train_nums, container);
 		
-		setContentView(R.layout.dialog_train_nums);
-		setTitle("What train are you on?");
-		
-		done = (Button)findViewById(R.id.btTrainPick);
+		done = (Button)v.findViewById(R.id.btTrainPick);
 		done.setOnClickListener(this);
 		
-		final Spinner trainPick = (Spinner)findViewById(R.id.spTrainPick);
-		final StopAdapter trainAdapter = new StopAdapter(context,android.R.layout.simple_spinner_item,Schedule.getStopsByTimePretty(timeWindow,null),StopAdapter.FORMAT_LONG);
+		getDialog().setTitle("Find your train");
+		
+		final Spinner trainPick = (Spinner)v.findViewById(R.id.spTrainPick);
+		final StopAdapter trainAdapter = new StopAdapter(getActivity(),R.layout.spinner_item_grey,Schedule.getStopsByTimePretty(timeWindow,null),StopAdapter.FORMAT_LONG);
 		trainPick.setAdapter(trainAdapter);
 		trainPick.setOnItemSelectedListener(new OnItemSelectedListener() {
 
@@ -67,8 +60,8 @@ public class TrainDialog extends Dialog implements OnClickListener{
 		});
 		
 		
-		Spinner stationPick = (Spinner)findViewById(R.id.spStationPick);
-		ArrayAdapter<String> stationAdapter = new ArrayAdapter<String>(context,android.R.layout.simple_spinner_item,Schedule.stopNamesList);
+		Spinner stationPick = (Spinner)v.findViewById(R.id.spStationPick);
+		ArrayAdapter<String> stationAdapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,Schedule.stopNamesList);
 		stationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		stationPick.setAdapter(stationAdapter);
 		stationPick.setOnItemSelectedListener(new OnItemSelectedListener() {
@@ -90,7 +83,7 @@ public class TrainDialog extends Dialog implements OnClickListener{
 			}
 		});
 		selected = (Stop) trainPick.getSelectedItem();
-		
+		return v;
 	}
 	@Override
 	public void onClick(View v) {
@@ -101,6 +94,18 @@ public class TrainDialog extends Dialog implements OnClickListener{
 				dismiss();
 			}
 		}
+	}
+
+
+
+	public Listener getListener() {
+		return listener;
+	}
+
+
+
+	public void setListener(Listener listener) {
+		this.listener = listener;
 	}
 
 }

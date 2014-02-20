@@ -11,7 +11,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:background="#CC0032" >
+        style="@style/bgRed" >
 
         <RelativeLayout
             android:id="@+id/relativeLayout2"
@@ -56,7 +56,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/relativeLayout1"
-        android:background="#EEEEEE" >
+        style="@style/bgGrey" >
 
         <Button
             android:id="@+id/btLogin"

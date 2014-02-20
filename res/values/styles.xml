@@ -2,21 +2,62 @@
 
     <!--
         Base application theme, dependent on API level. This theme is replaced
-        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     -->
     <style name="AppBaseTheme" parent="android:Theme.Light">
         <!--
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
+            backward-compatibility can go here.
         -->
     </style>
 
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
+
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
-        <item name="android:buttonStyle">@drawable/standard_button</item>
+        <item name="android:buttonStyle">@style/standardButton</item>
     </style>
-    
+
+    <style name="standardButton">
+        <item name="android:background">@drawable/standard_button</item>
+        <item name="android:textColor">#EEEEEE</item>
+    </style>
+
+    <style name="baseText">
+        <item name="android:textColor">#EEEEEE</item>
+    </style>
+
+    <style name="questionText" parent="@style/baseText">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="bgRed">
+        <item name="android:background">#CC0032</item>
+    </style>
+
+    <style name="bgGrey">
+        <item name="android:background">@color/AppGrey</item>
+    </style>
+
+    <style name="spinnerBase">
+        <item name="android:textColor">#EEEEEE</item>
+    </style>
+
+    <style name="spinnerRed" parent="@style/spinnerBase">
+        <item name="android:background">#CC0032</item>
+        <item name="android:textSize">28sp</item>
+    </style>
+
+    <style name="spinnerGrey" parent="@style/spinnerBase">
+        <item name="android:background">@color/AppGrey</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+
+    <style name="dialogGrey" parent="@android:style/Theme.Dialog">
+        <item name="android:windowBackground">@color/AppGrey</item>
+        <item name="android:windowIsFloating">true</item>
+    </style>
 
 </resources>

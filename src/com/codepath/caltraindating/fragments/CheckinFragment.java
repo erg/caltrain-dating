@@ -6,7 +6,9 @@ import java.util.Date;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,10 +21,6 @@ import android.widget.Spinner;
 
 import com.codepath.caltraindating.R;
 import com.codepath.caltraindating.TrainDialog;
-import com.codepath.caltraindating.R.id;
-import com.codepath.caltraindating.R.layout;
-import com.codepath.caltraindating.R.string;
-import com.codepath.caltraindating.TrainDialog.Listener;
 import com.codepath.caltraindating.adapters.StopAdapter;
 import com.codepath.caltraindating.adapters.TrainAdapter;
 import com.codepath.caltraindating.models.Callback;
@@ -65,12 +63,14 @@ public class CheckinFragment extends Fragment implements OnClickListener, TrainD
 		trainNumbers = (Spinner)v.findViewById(R.id.spTrainNumber);
 		trainStops = (Spinner)v.findViewById(R.id.spTrainStop);
 		addTrain.setOnClickListener(this);
-		trainDialog = new TrainDialog(getActivity(),this);
+		trainDialog = new TrainDialog();
+		trainDialog.setListener(this);
+		trainDialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.dialogGrey);
 		
-		stationAdapter = new StopAdapter(getActivity(),android.R.layout.simple_spinner_item,trainStations, StopAdapter.FORMAT_NAME);
+		stationAdapter = new StopAdapter(getActivity(),R.layout.spinner_item_grey,trainStations, StopAdapter.FORMAT_NAME);
 		trainStops.setAdapter(stationAdapter);
 		
-		trainAdapter = new TrainAdapter(getActivity(), android.R.layout.simple_list_item_1, recentTrains);
+		trainAdapter = new TrainAdapter(getActivity(), R.layout.spinner_item_red, recentTrains);
 		trainNumbers.setAdapter(trainAdapter);
 		trainNumbers.setOnItemSelectedListener(new OnItemSelectedListener() {
 
@@ -133,10 +133,15 @@ public class CheckinFragment extends Fragment implements OnClickListener, TrainD
 	public void onClick(View v) {
 		int id = v.getId();
 		if(id == R.id.btAddTrain){
-			trainDialog.show();
+			showTrainDialog();
 		}else if(id == R.id.btCheckIn){
 			checkIn();
 		}
+	}
+	
+	private void showTrainDialog(){
+		FragmentManager fm = getActivity().getSupportFragmentManager();
+        trainDialog.show(fm, "dialog_train_nums");
 	}
 	
 	private void checkIn(){

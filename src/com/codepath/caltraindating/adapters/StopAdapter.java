@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.codepath.caltraindating.R;
 import com.codepath.caltraindating.models.Stop;
 
 public class StopAdapter extends ArrayAdapter<Stop> {
@@ -19,39 +20,36 @@ public class StopAdapter extends ArrayAdapter<Stop> {
 	public static final int FORMAT_TRAIN=1;
 	public static final int FORMAT_NAME=2;
 	int format = FORMAT_LONG;
+	int resource;
 
 	public StopAdapter(Activity context, int resource, ArrayList<Stop> data, int format) {
 		super(context, resource, data);
 		this.context =context;
 		this.data = data;
 		this.format = format;
+		this.resource = resource;
 	}
 	
 	@Override
 	 public View getDropDownView(int position, View convertView, ViewGroup parent)
 	 {   
-	     View row = convertView;
-	     if(row == null)
-	     {
-	         //inflate your customlayout for the textview
-	         LayoutInflater inflater = context.getLayoutInflater();
-	         row = inflater.inflate(android.R.layout.simple_spinner_dropdown_item, parent, false);
-	     }
-	     ((TextView) row).setText(format(data.get(position)));
-
-	     return row;
+		return viewHelper(position,convertView,parent);
 	 }
 	
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
+		return viewHelper(position,convertView,parent);
+	}
+	
+	private View viewHelper(int position, View convertView, ViewGroup parent){
 		View row = convertView;
 	     if(row == null)
 	     {
 	         //inflate your customlayout for the textview
 	         LayoutInflater inflater = context.getLayoutInflater();
-	         row = inflater.inflate(android.R.layout.simple_spinner_item, parent, false);
+	         row = inflater.inflate(resource, parent, false);
 	     }
-	     ((TextView) row).setText(format(data.get(position)));
+	     ((TextView) row.findViewById(R.id.tvSpinnerText)).setText(format(data.get(position)));
 
 	     return row;
 	}

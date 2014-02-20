@@ -62,7 +62,7 @@ public class MainActivity extends FragmentActivity implements CheckinFragment.Li
 		
 		currentUser = ParseUser.getCurrentUser();
 
-		if (currentUser != null && false) {
+		if (currentUser != null) {
 			loginFragment.getFacebookDataInBackground(false);
 			switchToFragment(checkinFragment);
 		} else {
