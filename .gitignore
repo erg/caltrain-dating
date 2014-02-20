@@ -32,3 +32,4 @@ gen/
 local.properties
 *.apk
 *.ap_
+project.properties
