@@ -1,4 +1,4 @@
-package com.codepath.caltraindating;
+package com.codepath.caltraindating.fragments;
 
 import java.util.ArrayList;
 
@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.codepath.caltraindating.R;
+import com.codepath.caltraindating.R.layout;
 import com.codepath.caltraindating.models.Callback;
 import com.codepath.caltraindating.models.Checkin;
 import com.codepath.caltraindating.models.Schedule;

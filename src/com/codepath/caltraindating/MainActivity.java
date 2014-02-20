@@ -14,6 +14,9 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 
+import com.codepath.caltraindating.fragments.CheckinFragment;
+import com.codepath.caltraindating.fragments.LoginFragment;
+import com.codepath.caltraindating.fragments.RidersFragment;
 import com.codepath.caltraindating.models.Schedule;
 import com.codepath.caltraindating.models.Train;
 import com.parse.Parse;

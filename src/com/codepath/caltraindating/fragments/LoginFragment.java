@@ -1,4 +1,4 @@
-package com.codepath.caltraindating;
+package com.codepath.caltraindating.fragments;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,6 +16,9 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.codepath.caltraindating.R;
+import com.codepath.caltraindating.R.id;
+import com.codepath.caltraindating.R.layout;
 import com.facebook.HttpMethod;
 import com.facebook.Request;
 import com.facebook.Response;

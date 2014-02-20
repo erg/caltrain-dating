@@ -1,4 +1,7 @@
-package com.codepath.caltraindating;
+package com.codepath.caltraindating.fragments;
+
+import com.codepath.caltraindating.R;
+import com.codepath.caltraindating.R.layout;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

@@ -1,4 +1,4 @@
-package com.codepath.caltraindating;
+package com.codepath.caltraindating.fragments;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,6 +17,12 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.Spinner;
 
+import com.codepath.caltraindating.R;
+import com.codepath.caltraindating.TrainDialog;
+import com.codepath.caltraindating.R.id;
+import com.codepath.caltraindating.R.layout;
+import com.codepath.caltraindating.R.string;
+import com.codepath.caltraindating.TrainDialog.Listener;
 import com.codepath.caltraindating.adapters.StopAdapter;
 import com.codepath.caltraindating.adapters.TrainAdapter;
 import com.codepath.caltraindating.models.Callback;
