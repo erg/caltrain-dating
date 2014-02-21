@@ -22,6 +22,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.codepath.caltraindating.R;
 import com.codepath.caltraindating.TrainDialog;
@@ -49,6 +50,7 @@ public class CheckinFragment extends Fragment implements OnClickListener, TrainD
 	SharedPreferences sharedPref;
 	Train currentTrain = null;
 	RelativeLayout stationCheckin;
+	TextView tvCheckinStop;
 	
 	public interface Listener{
 		ParseUser getUser();
@@ -68,6 +70,7 @@ public class CheckinFragment extends Fragment implements OnClickListener, TrainD
 		addTrain = (Button)v.findViewById(R.id.btAddTrain);
 		trainNumbers = (Spinner)v.findViewById(R.id.spTrainNumber);
 		trainStops = (Spinner)v.findViewById(R.id.spTrainStop);
+		tvCheckinStop = (TextView)v.findViewById(R.id.tvCheckinStop);
 		
 		initRecentTrains();
 		addTrain.setOnClickListener(this);
@@ -152,9 +155,18 @@ public class CheckinFragment extends Fragment implements OnClickListener, TrainD
 		if(currentTrain != null){
 			trainStations.clear();
 			ArrayList<Stop> stopsAhead = Schedule.getStopsAheadOfTrain(currentTrain, Schedule.getNow());
-			trainStations.addAll(stopsAhead);
-			stationAdapter.notifyDataSetChanged();
-			trainStops.setSelection(Train.indexOfUsualStop(stopsAhead, currentTrain));
+			if(stopsAhead.size()>0){
+				checkIn.setVisibility(View.VISIBLE);
+				trainStops.setVisibility(View.VISIBLE);
+				tvCheckinStop.setText("Where are you getting off?");
+				trainStations.addAll(stopsAhead);
+				stationAdapter.notifyDataSetChanged();
+				trainStops.setSelection(Train.indexOfUsualStop(stopsAhead, currentTrain));
+			}else{
+				checkIn.setVisibility(View.INVISIBLE);
+				trainStops.setVisibility(View.INVISIBLE);
+				tvCheckinStop.setText("this train isn't running right now");
+			}
 		}
 	}
 
@@ -223,6 +235,7 @@ public class CheckinFragment extends Fragment implements OnClickListener, TrainD
 	public void onStopSelected(Stop s) {
 		currentTrain = new Train(listener.getUser(),s.getTrain());
 		insertRecentTrain(currentTrain);
+		trainNumbers.setSelection(0);
 		updateStations();
 	}
 }

@@ -41,7 +41,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginLeft="10dp"
         style="@style/questionText"
-        android:text="What train did you  take?" />
+        android:text="What train did you take?" />
 
     <Spinner
         android:id="@+id/spTrainPick"

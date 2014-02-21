@@ -63,7 +63,7 @@ public class Schedule {
 		Date d = new Date();
 		Calendar c = Calendar.getInstance();
 		c.setTime(d);
-		c.set(Calendar.HOUR, 7);
+		c.set(Calendar.HOUR, 9);
 		c.set(Calendar.AM_PM, Calendar.AM);
 		return c.getTime();
 	}

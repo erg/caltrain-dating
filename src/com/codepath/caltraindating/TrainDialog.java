@@ -15,100 +15,112 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.codepath.caltraindating.adapters.StopAdapter;
+import com.codepath.caltraindating.adapters.StringAdapter;
 import com.codepath.caltraindating.models.Schedule;
 import com.codepath.caltraindating.models.Stop;
 
-public class TrainDialog extends DialogFragment implements OnClickListener{
-	
-	final Long timeWindow = (long) 3600000/2;
+public class TrainDialog extends DialogFragment implements OnClickListener {
+
+	final Long timeWindow = (long) 3600000 / 2;
 	Listener listener = null;
 	Button done;
 	Stop selected = null;
 	ArrayList<Stop> stops = new ArrayList<Stop>();
-	
+	TextView tvPickTrain;
 
 	public interface Listener {
 		public void onStopSelected(Stop s);
 	}
-	
-	public TrainDialog(){
+
+	public TrainDialog() {
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.dialog_train_nums, container);
-		
-		done = (Button)v.findViewById(R.id.btTrainPick);
+
+		done = (Button) v.findViewById(R.id.btTrainPick);
 		done.setOnClickListener(this);
-		
-		//getDialog().setTitle("Find your train");
+
+		// getDialog().setTitle("Find your train");
 		getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-		final Spinner trainPick = (Spinner)v.findViewById(R.id.spTrainPick);
-		final StopAdapter trainAdapter = new StopAdapter(getActivity(),R.layout.spinner_item_grey,stops,StopAdapter.FORMAT_LONG);
+		final Spinner trainPick = (Spinner) v.findViewById(R.id.spTrainPick);
+		tvPickTrain = (TextView) v.findViewById(R.id.tvPickTrain);
+		final StopAdapter trainAdapter = new StopAdapter(getActivity(),
+				R.layout.spinner_item_grey, stops, StopAdapter.FORMAT_LONG);
 		trainPick.setAdapter(trainAdapter);
 		trainPick.setOnItemSelectedListener(new OnItemSelectedListener() {
 
 			@Override
-			public void onItemSelected(AdapterView<?> parent, View v,
-					int pos, long id) {
-					selected = (Stop) parent.getItemAtPosition(pos);
+			public void onItemSelected(AdapterView<?> parent, View v, int pos,
+					long id) {
+				selected = (Stop) parent.getItemAtPosition(pos);
 			}
 
 			@Override
 			public void onNothingSelected(AdapterView<?> arg0) {
 				// TODO Auto-generated method stub
-				
+
 			}
 		});
-		
-		
-		Spinner stationPick = (Spinner)v.findViewById(R.id.spStationPick);
-		ArrayAdapter<String> stationAdapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,Schedule.stopNamesList);
-		stationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+		Spinner stationPick = (Spinner) v.findViewById(R.id.spStationPick);
+		/*ArrayAdapter<String> stationAdapter = new ArrayAdapter<String>(
+				getActivity(), android.R.layout.simple_spinner_item,
+				Schedule.stopNamesList);*/
+		StringAdapter stationAdapter = new StringAdapter(getActivity(),R.layout.spinner_item_grey,Schedule.stopNamesList);
+		stationAdapter
+				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		stationPick.setAdapter(stationAdapter);
 		stationPick.setOnItemSelectedListener(new OnItemSelectedListener() {
 
 			@Override
-			public void onItemSelected(AdapterView<?> parent, View v,
-					int pos, long id) {
+			public void onItemSelected(AdapterView<?> parent, View v, int pos,
+					long id) {
 				trainAdapter.clear();
-				ArrayList<Stop> st = Schedule.getStopsByTimePretty(timeWindow,pos);
-				Log.e("tag","onItemSelected size: "+st.size());
-				for(Stop s: st){
-					trainAdapter.add(s);
+				ArrayList<Stop> st = Schedule.getStopsByTimePretty(timeWindow,
+						pos);
+				if (st.size() > 0) {
+					trainPick.setVisibility(View.VISIBLE);
+					tvPickTrain.setText("What train did you take?");
+					for (Stop s : st) {
+						trainAdapter.add(s);
+					}
+					selected = (Stop) trainPick.getSelectedItem();
+				} else {
+					trainPick.setVisibility(View.INVISIBLE);
+					tvPickTrain.setText("No Trains departing right now...");
 				}
-				selected = (Stop) trainPick.getSelectedItem();
 			}
 
 			@Override
 			public void onNothingSelected(AdapterView<?> arg0) {
 				// TODO Auto-generated method stub
-				
+
 			}
 		});
 		selected = (Stop) trainPick.getSelectedItem();
 		return v;
 	}
+
 	@Override
 	public void onClick(View v) {
 		int id = v.getId();
-		if(id == R.id.btTrainPick){
-			if(selected != null){
+		if (id == R.id.btTrainPick) {
+			if (selected != null) {
 				listener.onStopSelected(selected);
 				dismiss();
 			}
 		}
 	}
 
-
-
 	public Listener getListener() {
 		return listener;
 	}
-
-
 
 	public void setListener(Listener listener) {
 		this.listener = listener;
