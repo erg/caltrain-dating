@@ -14,9 +14,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 
 import com.codepath.caltraindating.R;
@@ -44,6 +48,7 @@ public class CheckinFragment extends Fragment implements OnClickListener, TrainD
 	TrainDialog trainDialog;
 	SharedPreferences sharedPref;
 	Train currentTrain = null;
+	RelativeLayout stationCheckin;
 	
 	public interface Listener{
 		ParseUser getUser();
@@ -56,12 +61,15 @@ public class CheckinFragment extends Fragment implements OnClickListener, TrainD
 		super.onCreateView(inflater, container, savedInstanceState);
 		sharedPref = getActivity().getSharedPreferences(
 		        getString(R.string.preferences_file), Context.MODE_PRIVATE);
-		initRecentTrains();
+		
 		View v = inflater.inflate(R.layout.fragment_checkin, container,false);
+		stationCheckin = (RelativeLayout)v.findViewById(R.id.rlStationCheckin);
 		checkIn = (Button)v.findViewById(R.id.btCheckIn);
 		addTrain = (Button)v.findViewById(R.id.btAddTrain);
 		trainNumbers = (Spinner)v.findViewById(R.id.spTrainNumber);
 		trainStops = (Spinner)v.findViewById(R.id.spTrainStop);
+		
+		initRecentTrains();
 		addTrain.setOnClickListener(this);
 		trainDialog = new TrainDialog();
 		trainDialog.setListener(this);
@@ -79,8 +87,10 @@ public class CheckinFragment extends Fragment implements OnClickListener, TrainD
 					int pos, long id) {
 				currentTrain = (Train) parent.getItemAtPosition(pos);
 				updateStations();
+				showStationSection();
 			}
 
+			
 			@Override
 			public void onNothingSelected(AdapterView<?> arg0) {
 				// TODO Auto-generated method stub
@@ -117,6 +127,25 @@ public class CheckinFragment extends Fragment implements OnClickListener, TrainD
 	
 	public void setListener(Listener l){
 		this.listener = l;
+	}
+	
+	private void showStationSection(){
+		if(stationCheckin.getVisibility() != View.VISIBLE){
+			final Animation animationFadeIn = AnimationUtils.loadAnimation(getActivity(), R.anim.fadein);
+			animationFadeIn.setAnimationListener(new AnimationListener() {
+				@Override
+				public void onAnimationStart(Animation animation) {}
+				
+				@Override
+				public void onAnimationRepeat(Animation animation) {}
+				
+				@Override
+				public void onAnimationEnd(Animation animation) {
+					stationCheckin.setVisibility(View.VISIBLE);
+				}
+			});
+			stationCheckin.startAnimation(animationFadeIn);
+		}
 	}
 	
 	private void updateStations(){

@@ -57,6 +57,8 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
+        android:id="@+id/rlStationCheckin"
+        android:visibility="invisible"
         style="@style/bgGrey"
         android:layout_below="@+id/relativeLayout1" >
 

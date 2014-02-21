@@ -173,6 +173,7 @@ public class Schedule {
 
 	public static void initSchedules(Activity activity) {
 		InputStream is = activity.getResources().openRawResource(R.raw.schedules);
+		allStops.clear();
 	    BufferedReader br = new BufferedReader(new InputStreamReader(is));
 		String line = null;
 		int i = 0;

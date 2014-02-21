@@ -18,6 +18,8 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        style="@style/questionText"
         android:text="Where did you get on?" />
 
     <Spinner
@@ -26,6 +28,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/tvStationPick"
+        android:layout_marginLeft="10dp"
+        android:windowBackground="@color/Red"
         android:layout_marginTop="10dp" />
 
     <TextView
@@ -35,6 +39,8 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/spStationPick"
         android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        style="@style/questionText"
         android:text="What train did you  take?" />
 
     <Spinner
@@ -42,6 +48,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
+        android:layout_marginLeft="10dp"
         android:layout_below="@+id/tvPickTrain"
         android:layout_marginTop="10dp" />
 

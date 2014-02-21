@@ -1,12 +1,15 @@
 package com.codepath.caltraindating;
 
-import android.app.Activity;
+import java.util.ArrayList;
+
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -23,6 +26,7 @@ public class TrainDialog extends DialogFragment implements OnClickListener{
 	Listener listener = null;
 	Button done;
 	Stop selected = null;
+	ArrayList<Stop> stops = new ArrayList<Stop>();
 	
 
 	public interface Listener {
@@ -39,10 +43,10 @@ public class TrainDialog extends DialogFragment implements OnClickListener{
 		done = (Button)v.findViewById(R.id.btTrainPick);
 		done.setOnClickListener(this);
 		
-		getDialog().setTitle("Find your train");
-		
+		//getDialog().setTitle("Find your train");
+		getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 		final Spinner trainPick = (Spinner)v.findViewById(R.id.spTrainPick);
-		final StopAdapter trainAdapter = new StopAdapter(getActivity(),R.layout.spinner_item_grey,Schedule.getStopsByTimePretty(timeWindow,null),StopAdapter.FORMAT_LONG);
+		final StopAdapter trainAdapter = new StopAdapter(getActivity(),R.layout.spinner_item_grey,stops,StopAdapter.FORMAT_LONG);
 		trainPick.setAdapter(trainAdapter);
 		trainPick.setOnItemSelectedListener(new OnItemSelectedListener() {
 
@@ -70,7 +74,9 @@ public class TrainDialog extends DialogFragment implements OnClickListener{
 			public void onItemSelected(AdapterView<?> parent, View v,
 					int pos, long id) {
 				trainAdapter.clear();
-				for(Stop s: Schedule.getStopsByTimePretty(timeWindow,pos)){
+				ArrayList<Stop> st = Schedule.getStopsByTimePretty(timeWindow,pos);
+				Log.e("tag","onItemSelected size: "+st.size());
+				for(Stop s: st){
 					trainAdapter.add(s);
 				}
 				selected = (Stop) trainPick.getSelectedItem();

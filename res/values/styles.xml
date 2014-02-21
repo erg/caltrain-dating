@@ -21,11 +21,11 @@
 
     <style name="standardButton">
         <item name="android:background">@drawable/standard_button</item>
-        <item name="android:textColor">#EEEEEE</item>
+        <item name="android:textColor">@color/AppWhite</item>
     </style>
 
     <style name="baseText">
-        <item name="android:textColor">#EEEEEE</item>
+        <item name="android:textColor">@color/AppWhite</item>
     </style>
 
     <style name="questionText" parent="@style/baseText">
@@ -33,19 +33,19 @@
     </style>
 
     <style name="bgRed">
-        <item name="android:background">#CC0032</item>
+        <item name="android:background">@color/AppRed</item>
     </style>
 
     <style name="bgGrey">
         <item name="android:background">@color/AppGrey</item>
     </style>
 
-    <style name="spinnerBase">
-        <item name="android:textColor">#EEEEEE</item>
+    <style name="spinnerBase" >
+        <item name="android:textColor">@color/AppWhite</item>
     </style>
 
     <style name="spinnerRed" parent="@style/spinnerBase">
-        <item name="android:background">#CC0032</item>
+        <item name="android:background">@color/AppRed</item>
         <item name="android:textSize">28sp</item>
     </style>
 
@@ -59,5 +59,9 @@
         <item name="android:windowBackground">@color/AppGrey</item>
         <item name="android:windowIsFloating">true</item>
     </style>
+    
+    <style name="StandardSpinner" parent="@android:style/Widget.Spinner">
+    <item name="android:background">@color/AppGrey</item>
+</style>
 
 </resources>
