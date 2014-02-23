@@ -19,8 +19,8 @@ import com.codepath.caltraindating.R;
 
 public class Schedule {
 	
-	static final String[] weekdayNorthTrains = {"305","313","207","309","211","313","215","217","319","221","323","225","227","329"};
-	static final String[] weekdaySouthTrains = {};
+	static final String[] weekdayNorthTrains = {"101", "103", "305", "207", "309", "211", "313", "215", "217", "319", "221", "323", "225", "227", "329", "231", "233", "135", "237", "139", "143", "147", "151", "155", "257", "159", "261", "263", "365", "267", "269", "371", "273", "375", "277", "279", "381", "283", "385", "287", "289", "191", "193", "195", "197", "199"};
+	static final String[] weekdaySouthTrains = {"102", "104", "206", "208", "210", "312", "314", "216", "218", "220", "322", "324", "226", "228", "230", "332", "134", "236", "138", "142", "146", "150", "152", "254", "156", "258", "360", "262", "264", "366", "268", "370", "272", "274", "376", "278", "380", "282", "284", "386", "288", "190", "192", "194", "196", "198"};
 	static final String[] weekendNorthTrains = {};
 	static final String[] weekendSouthTrains = {};
 	
@@ -58,14 +58,14 @@ public class Schedule {
 	}
 	
 	public static Date getNow(){
-		//return new Date();
+		return new Date();
 		//simulates a 7 am-ish checkin
-		Date d = new Date();
+		/*Date d = new Date();
 		Calendar c = Calendar.getInstance();
 		c.setTime(d);
 		c.set(Calendar.HOUR, 9);
 		c.set(Calendar.AM_PM, Calendar.AM);
-		return c.getTime();
+		return c.getTime();*/
 	}
 	
 	public static ArrayList<Stop> getStopsAheadOfTrain(Train t, Date d){
@@ -160,7 +160,7 @@ public class Schedule {
 		//takes a 24 hr string aka "14:15:16" and returns the date that matches the next time that time will happen
 		Date prevMid = setTime(getNow(),0,0,0,0);
 		String[] times = time24.split(":");
-		Date target = incrementTime(prevMid,Integer.valueOf(times[0]),Integer.valueOf(times[1]),Integer.valueOf(times[2]),0);
+		Date target = incrementTime(prevMid,Integer.valueOf(times[0]),Integer.valueOf(times[1]),0,0);
 		Date now = getNow();
 		if(now.after(target)){
 			//return target + 1 day
