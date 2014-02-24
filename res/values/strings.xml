@@ -10,5 +10,6 @@
     <string name="parseId">aqs7oI3BEXEXxaUpr8eRMFjASRtUUdErzg0LvY53</string>
     <string name="parseKey">VHOa2jLezZiXLQuwJAAiiSm3yMq2ofcLSS1qZ8oK</string>
     <string name="preferences_file">caltrain_prefs</string>
+    <string name="title_activity_chat">Caltrain Chat</string>
 
 </resources>

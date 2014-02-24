@@ -61,7 +61,39 @@
     </style>
     
     <style name="StandardSpinner" parent="@android:style/Widget.Spinner">
-    <item name="android:background">@color/AppGrey</item>
-</style>
+        <item name="android:background">@color/AppGrey</item>
+    </style>
+
+    <!-- style name="chatTime">
+	    <item name="android:padding">2dp</item>    
+		<item name="android:textColor">#ffffff</item>   
+		<item name="android:textSize">12sp</item>      
+		<item name="android:background">#bfbfbf</item> 
+	</style-->
+
+    <style name="chatTime">
+	    <item name="android:padding">2dp</item>    
+		<item name="android:textColor">#222222</item>   
+		<item name="android:textSize">12sp</item>      
+	</style>
+  
+	     
+	<style name="chatMessage">
+	    <item name="android:minHeight">50dp</item>
+	    <item name="android:gravity">left|center</item>    
+		<item name="android:textColor">#000000</item>   
+		<item name="android:textSize">15sp</item>      
+		<item name="android:lineSpacingExtra">2dp</item>   
+		<item name="android:clickable">true</item>   
+		<item name="android:focusable">true</item>   
+		<item name="android:background">#bfbfbf</item> 
+	</style>	 
+	
+	<style name="chatName">  
+		<item name="android:textColor">#818181</item>   
+		<item name="android:textSize">15sp</item>      
+		<item name="android:gravity">center</item> 
+	</style>
+    
 
 </resources>
