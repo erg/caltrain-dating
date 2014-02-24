@@ -34,7 +34,18 @@ public class Schedule {
 	
 	static ArrayList<Stop> allStops = new ArrayList<Stop>();
 	
-
+	
+	public static Date getNow(){
+		return new Date();
+		/*simulates a 7 am-ish checkin
+		Date d = new Date();
+		Calendar c = Calendar.getInstance();
+		c.setTime(d);
+		c.set(Calendar.HOUR, 9);
+		c.set(Calendar.AM_PM, Calendar.AM);
+		return c.getTime();*/
+	}
+	
 	public static Long getArrivalTime(String train, int destination) {
 		ArrayList<Stop> times = getTrainTimes(train);
 		Stop s = times.get(destination);
@@ -48,63 +59,37 @@ public class Schedule {
 	public static ArrayList<Stop> getStopsByTimePretty(Long timeWindow, Integer station){
 		ArrayList<Stop> ret = new ArrayList<Stop>();
 		Long now = getNow().getTime();
-		Long hours24 = (long) (3600000*24);
 		for(Stop s : allStops){
-			if ((station == null || s.stationId == station) && (now + timeWindow > s.timeMillis  || s.timeMillis - now - hours24 + timeWindow > 0)){
+			if ((station == null || s.stationId == station) && Math.abs(now - s.getTimeMillis()) < timeWindow ){
 				ret.add(s);
 			}
 		}
 		return ret;
 	}
 	
-	public static Date getNow(){
-		return new Date();
-		//simulates a 7 am-ish checkin
-		/*Date d = new Date();
-		Calendar c = Calendar.getInstance();
-		c.setTime(d);
-		c.set(Calendar.HOUR, 9);
-		c.set(Calendar.AM_PM, Calendar.AM);
-		return c.getTime();*/
-	}
-	
 	public static ArrayList<Stop> getStopsAheadOfTrain(Train t, Date d){
-		Log.e("tag","get stops ahead of now: "+dateString(d));
 		ArrayList<Stop> ret = new ArrayList<Stop>();
 		Long millis = d.getTime();	
-		Long maxTime = (long) (5*3600*1000);
 		ArrayList<Stop> trainStops = getTrainTimes(t.getId());
-		Stop prev = null;
 		int stopSize = trainStops.size();
 		if(isNorthBound(t.getId())){
-			int i = stopSize-1;
-			while(i > 0){
+			for(int i=stopSize-1;i>=0;i--){
 				Stop stop = trainStops.get(i);
-				if(stop != null && prev != null && stop.getTimeMillis() > prev.getTimeMillis()){
-					return ret;
-				}else if(stop != null  && stop.getTimeMillis() > millis && stop.getTimeMillis() < millis+maxTime){
+				if(stop != null && stop.getTimeMillis() > millis){
 					ret.add(stop);
-					prev = stop;
 				}
-				i--;
 			}
 		}else{
-			int i = 0;
-			while(i < stopSize){
+			for(int i=0;i<stopSize;i++){
 				Stop stop = trainStops.get(i);
-				if(stop != null && prev != null && stop.getTimeMillis() > prev.getTimeMillis()){
-					return ret;
-				}else if(stop != null  && stop.getTimeMillis() > millis && stop.getTimeMillis() < millis+maxTime){
+				if(stop != null && stop.getTimeMillis() > millis){
 					ret.add(stop);
-					prev = stop;
 				}
-				i++;
 			}
 		}
 		return ret;
 	}
 	
-
 	public static boolean isNorthBound(String train){
 		if(weekdayNorthSchedule.containsKey(train)){
 			return true;
@@ -114,6 +99,47 @@ public class Schedule {
 			return true;
 		}else{
 			return false;
+		}
+	}
+	
+	public static String dateString(Date d){
+		Calendar c = Calendar.getInstance();
+		c.setTime(d);
+		return c.get(Calendar.DAY_OF_MONTH)+" -- "+c.get(Calendar.HOUR_OF_DAY)+":"+c.get(Calendar.MINUTE);
+	}
+	
+	public static Date incrementTime(Date d, int hr, int min, int sec, int mil){
+		Calendar c = Calendar.getInstance();
+		c.setTime(d);
+		c.add(Calendar.HOUR, hr);
+		c.add(Calendar.MINUTE, min);
+		c.add(Calendar.SECOND, sec);
+		c.add(Calendar.MILLISECOND, mil);
+		return c.getTime();
+	}
+	
+	public static Date setTime(Date d,int hr, int min, int sec, int mil){
+		Calendar c = Calendar.getInstance();
+		c.setTime(d);
+		c.set(Calendar.HOUR_OF_DAY, hr);
+		c.set(Calendar.MINUTE, min);
+		c.set(Calendar.SECOND, sec);
+		c.set(Calendar.MILLISECOND, mil);
+		return c.getTime();
+	}
+	
+	public static Date getTodaysDateTime(String time24){
+		//takes a 24 hr string aka "14:15:16" and returns the date that time happened today (today = 3am - 3am)
+		Date prevMid = setTime(getNow(),0,0,0,0);
+		String[] times = time24.split(":");
+		Date target = incrementTime(prevMid,Integer.valueOf(times[0]),Integer.valueOf(times[1]),0,0);
+		Date now = getNow();
+		long hours3 = 3600*1000*3;
+		if(now.getTime() - prevMid.getTime() < hours3){
+			//return target + 1 day
+			return incrementTime(target,24,0,0,0);
+		}else{
+			return target;
 		}
 	}
 	
@@ -128,49 +154,7 @@ public class Schedule {
 			return weekendSouthSchedule.get(train);
 		}
 	}
-
 	
-	public static Date setTime(Date d,int hr, int min, int sec, int mil){
-		Calendar c = Calendar.getInstance();
-		c.setTime(d);
-		c.set(Calendar.HOUR_OF_DAY, hr);
-		c.set(Calendar.MINUTE, min);
-		c.set(Calendar.SECOND, sec);
-		c.set(Calendar.MILLISECOND, mil);
-		return c.getTime();
-	}
-	
-	public static Date incrementTime(Date d, int hr, int min, int sec, int mil){
-		Calendar c = Calendar.getInstance();
-		c.setTime(d);
-		c.add(Calendar.HOUR, hr);
-		c.add(Calendar.MINUTE, min);
-		c.add(Calendar.SECOND, sec);
-		c.add(Calendar.MILLISECOND, mil);
-		return c.getTime();
-	}
-	
-	public static String dateString(Date d){
-		Calendar c = Calendar.getInstance();
-		c.setTime(d);
-		return c.get(Calendar.DAY_OF_MONTH)+" -- "+c.get(Calendar.HOUR_OF_DAY)+":"+c.get(Calendar.MINUTE);
-	}
-	
-	public static Date getFutureDate(String time24){
-		//takes a 24 hr string aka "14:15:16" and returns the date that matches the next time that time will happen
-		Date prevMid = setTime(getNow(),0,0,0,0);
-		String[] times = time24.split(":");
-		Date target = incrementTime(prevMid,Integer.valueOf(times[0]),Integer.valueOf(times[1]),0,0);
-		Date now = getNow();
-		if(now.after(target)){
-			//return target + 1 day
-			return incrementTime(target,24,0,0,0);
-		}else{
-			return target;
-		}
-	}
-
-
 	public static void initSchedules(Activity activity) {
 		InputStream is = activity.getResources().openRawResource(R.raw.schedules);
 		allStops.clear();
@@ -204,7 +188,7 @@ public class Schedule {
 						Date target = null;
 						boolean north = true;
 						if(!split[j].isEmpty() && !split[j].equals("")){
-							target = getFutureDate(split[j]);
+							target = getTodaysDateTime(split[j]);
 						}
 						ArrayList<Stop> times;
 						if(Arrays.asList(weekdayNorthTrains).contains(num)){
