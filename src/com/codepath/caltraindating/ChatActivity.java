@@ -32,7 +32,7 @@ public class ChatActivity extends FragmentActivity implements ChatFragment.OnPro
         vpChatting.setAdapter(fpAdapter);
         vpChatting.setCurrentItem(0);
         
-        Parse.initialize(this, "aqs7oI3BEXEXxaUpr8eRMFjASRtUUdErzg0LvY53", "VHOa2jLezZiXLQuwJAAiiSm3yMq2ofcLSS1qZ8oK");
+        // Parse.initialize(this, "aqs7oI3BEXEXxaUpr8eRMFjASRtUUdErzg0LvY53", "VHOa2jLezZiXLQuwJAAiiSm3yMq2ofcLSS1qZ8oK");
         
         // Test creation of object
       	// ParseObject testObject = new ParseObject("ChatObject");
@@ -42,7 +42,7 @@ public class ChatActivity extends FragmentActivity implements ChatFragment.OnPro
       	// testObject.put("riderId", 123456);
       	// testObject.saveInBackground();        
       	
-      	PushService.setDefaultPushCallback(this, ChatActivity.class);
+      	// PushService.setDefaultPushCallback(this, ChatActivity.class);
 	}
 
 	@Override
