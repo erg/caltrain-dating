@@ -8,9 +8,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import com.codepath.caltraindating.R;
-import com.codepath.caltraindating.R.layout;
+import com.codepath.caltraindating.adapters.RiderListAdapter;
 import com.codepath.caltraindating.models.Callback;
 import com.codepath.caltraindating.models.Checkin;
 import com.codepath.caltraindating.models.Schedule;
@@ -20,6 +21,8 @@ import com.parse.ParseUser;
 public class RidersFragment extends Fragment{
 	Train currentTrain = null;
 	Listener listener = null;
+	ListView lvRiders;
+	RiderListAdapter riderListAdapter;
 	
 	public interface Listener{
 		ParseUser getUser();
@@ -30,15 +33,19 @@ public class RidersFragment extends Fragment{
 			Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
 		View v = inflater.inflate(R.layout.fragment_riders, container,false);
+		lvRiders = (ListView)v.findViewById(R.id.lvRiders);
 		loadRiders(currentTrain);
-		return v;
-		
+		return v;		
 	}
 	
 	private void loadRiders(Train t){
 		Checkin.getCheckins(listener.getUser(), currentTrain, Schedule.getNow(), new Callback<ArrayList<Checkin>>(){
 			@Override
 			public void complete(ArrayList<Checkin> checkins) {
+				
+				riderListAdapter = new RiderListAdapter(getActivity(), (ArrayList<Checkin>) checkins);
+		        lvRiders.setAdapter(riderListAdapter);
+				
 				for(Checkin c: checkins){
 					Log.d("tag","got checkin: "+c.getUser().getObjectId());
 //					Log.d("tag","got checkin: "+c.getUser().getString("firstName"));

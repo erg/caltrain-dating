@@ -1,22 +1,18 @@
 package com.codepath.caltraindating.fragments;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.codepath.caltraindating.CaltrainUtils;
 import com.codepath.caltraindating.R;
 import com.codepath.caltraindating.adapters.SmartFragmentStatePagerAdapter;
 import com.codepath.caltraindating.fragments.LoginFragment.Listener;
@@ -48,7 +44,7 @@ public class MyProfileFragment extends Fragment {
 		tvFirstName.setText((String)currentUser.get("firstName"));
 
 		tvAge = (TextView)view.findViewById(R.id.tvAge);
-		age = calculateAge(view.getContext(), (String)currentUser.get("birthday"));
+		age = CaltrainUtils.calculateAge(view.getContext(), (String)currentUser.get("birthday"));
 		tvAge.setText(age);		
 		
 		tvBlurb = (TextView)view.findViewById(R.id.tvBlurb);
@@ -63,38 +59,14 @@ public class MyProfileFragment extends Fragment {
 		return view;
 	}
 	
-	// Calculate age by year, then set birthday to current year and correct if necessary
-	public String calculateAge(Context context, String date) {
-		final String FACEBOOK = "MM/dd/yyyy";
-		try {
-			SimpleDateFormat sf = new SimpleDateFormat(FACEBOOK, Locale.ENGLISH);
-			sf.setLenient(true);
-			Date birthDate = sf.parse(date);
-			Date now = new Date();
-			int age = now.getYear() - birthDate.getYear();
-			birthDate.setHours(0);
-			birthDate.setMinutes(0);
-			birthDate.setSeconds(0);
-			birthDate.setYear(now.getYear());
-			if(birthDate.after(now)) {
-				age -= 1;
-			}
-			return Integer.toString(age);
-			
-		} catch (Exception e) {
-			Log.d("DEBUG", "exception in getTwitterDate:");
-			e.printStackTrace();
-			return "Unknown";
-		}
-	}
 
 	// Like, what if they are in the app and have a birthday? Recalculate. 
-	 @Override
-	 public void onResume() {
-		 super.onResume();
-		age = calculateAge(view.getContext(), (String)currentUser.get("birthday"));
+	@Override
+	public void onResume() {
+		super.onResume();
+		age = CaltrainUtils.calculateAge(view.getContext(), (String)currentUser.get("birthday"));
 		tvAge.setText(age);		
-	 }
+	}
 	
 	public Listener getListener() {
 		return listener;

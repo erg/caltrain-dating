@@ -115,6 +115,6 @@ public class MainActivity extends FragmentActivity implements CheckinFragment.Li
 	@Override
 	public void fbDataUpdated() {
 		switchToFragment(checkinFragment);
-		//switchToFragment(myProfileFragment);
+//		switchToFragment(myProfileFragment);
 	}
 }
