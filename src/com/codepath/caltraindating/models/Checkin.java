@@ -51,7 +51,7 @@ public class Checkin {
 	
 	public static void getCheckins(ParseUser u, Train t,Date d, final Callback<ArrayList<Checkin>> cb){
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("Checkin");
-		//query.whereNotEqualTo("user", u);
+		query.whereNotEqualTo("user", u);
 		query.include("user");
 		query.whereEqualTo("train", t.getId());
 		query.whereGreaterThan("checkoutTime", d.getTime());
