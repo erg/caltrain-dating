@@ -1,8 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
-    
+    android:orientation="vertical"
+    android:weightSum="100" >
 
-</RelativeLayout>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vpImages"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="70"
+        android:src="@drawable/ic_launcher" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="30" >
+
+        <TextView
+            android:id="@+id/tvFirstName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="15dp"
+            android:text="Doug123"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvAge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/tvFirstName"
+            android:layout_toRightOf="@+id/tvFirstName"
+            android:paddingLeft="8dp"
+            android:text="32_123"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/tvBlurb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/tvFirstName"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:maxLines="100"
+            android:scrollbars="vertical"
+            android:text="I commute because I like trains. What&apos;s your favorite kind of train? Maybe we have something in common! Do you think Caltrains should be steam engines? Those are much cooler than diesel."
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+    </RelativeLayout>
+
+</LinearLayout>

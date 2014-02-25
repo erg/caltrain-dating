@@ -7,7 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.graphics.Typeface;
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -16,9 +16,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.Toast;
 
-import com.codepath.caltraindating.MainActivity;
 import com.codepath.caltraindating.R;
 import com.facebook.HttpMethod;
 import com.facebook.Request;
@@ -103,6 +102,8 @@ public class LoginFragment extends Fragment implements OnClickListener {
 								ArrayList<String> big_srcs = new ArrayList<String>();
 								for (int i = 0; i < photos.length(); i++) {
 									JSONObject obj = photos.getJSONObject(i);
+									Log.d("DEBUG",
+											"src:" + obj.getString("src"));
 									srcs.add(obj.getString("src"));
 									big_srcs.add(obj.getString("src_big"));
 									if (i > 9) {
@@ -137,6 +138,7 @@ public class LoginFragment extends Fragment implements OnClickListener {
 							currentUser.put("lastName", user.getLastName());
 							currentUser.put("birthday", user.getBirthday());
 							currentUser.saveInBackground();
+
 							if (notifyListener) {
 								fbDataCheck();
 							}

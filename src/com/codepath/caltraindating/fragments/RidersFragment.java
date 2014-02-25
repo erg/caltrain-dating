@@ -24,6 +24,7 @@ public class RidersFragment extends Fragment{
 	public interface Listener{
 		ParseUser getUser();
 	}
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -40,6 +41,9 @@ public class RidersFragment extends Fragment{
 			public void complete(ArrayList<Checkin> checkins) {
 				for(Checkin c: checkins){
 					Log.d("tag","got checkin: "+c.getUser().getObjectId());
+//					Log.d("tag","got checkin: "+c.getUser().getString("firstName"));
+//					Log.d("tag","got checkin: "+c.getUser().getString("lastName"));
+//					Log.d("tag","got checkin: "+c.getUser().getString("birthday"));
 				}
 			}
 		});

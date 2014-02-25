@@ -25,7 +25,7 @@ public class Checkin {
 		}
 		this.checkinTime = checkinTime;
 		this.checkoutTime = Schedule.getArrivalTime(train, destination);
-		this.train =  train;
+		this.train = train;
 		this.user = user;
 		this.destination = destination;
 	}
@@ -51,6 +51,7 @@ public class Checkin {
 	public static void getCheckins(ParseUser u, Train t,Date d, final Callback<ArrayList<Checkin>> cb){
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("Checkin");
 		//query.whereNotEqualTo("user", u);
+		query.include("user");
 		query.whereEqualTo("train", t.getId());
 		query.whereGreaterThan("checkoutTime", d.getTime());
 		query.orderByDescending("updatedAt");

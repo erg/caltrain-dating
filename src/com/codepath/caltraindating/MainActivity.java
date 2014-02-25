@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.codepath.caltraindating.fragments.CheckinFragment;
 import com.codepath.caltraindating.fragments.LoginFragment;
+import com.codepath.caltraindating.fragments.MyProfileFragment;
 import com.codepath.caltraindating.fragments.RidersFragment;
 import com.codepath.caltraindating.models.Schedule;
 import com.codepath.caltraindating.models.Train;
@@ -30,6 +31,7 @@ import com.parse.ParseUser;
 public class MainActivity extends FragmentActivity implements CheckinFragment.Listener, RidersFragment.Listener, LoginFragment.Listener {
 	
 	LoginFragment loginFragment;
+	MyProfileFragment myProfileFragment;
 	CheckinFragment checkinFragment;
 	RidersFragment ridersFragment;
 	ParseUser currentUser = null;
@@ -41,11 +43,14 @@ public class MainActivity extends FragmentActivity implements CheckinFragment.Li
 		Parse.initialize(this, getResources().getString(R.string.parseId), getResources().getString(R.string.parseKey));
 		ParseFacebookUtils.initialize(getResources().getString(R.string.app_id));
 		loginFragment = new LoginFragment();
-		checkinFragment = new CheckinFragment();
-		ridersFragment = new RidersFragment();
-		checkinFragment.setListener(this);
-		ridersFragment.setListener(this);
 		loginFragment.setListener(this);
+		myProfileFragment = new MyProfileFragment();
+		myProfileFragment.setListener(this);
+		checkinFragment = new CheckinFragment();
+		checkinFragment.setListener(this);
+		ridersFragment = new RidersFragment();
+		ridersFragment.setListener(this);
+		
 		Schedule.initSchedules(this);
 		
 		//helpful for finding your hashkey, keep here
@@ -110,6 +115,6 @@ public class MainActivity extends FragmentActivity implements CheckinFragment.Li
 	@Override
 	public void fbDataUpdated() {
 		switchToFragment(checkinFragment);
+		//switchToFragment(myProfileFragment);
 	}
-
 }
