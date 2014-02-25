@@ -2,6 +2,7 @@ package com.codepath.caltraindating.models;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 import android.util.Log;
@@ -58,9 +59,17 @@ public class Checkin {
 		query.findInBackground(new FindCallback<ParseObject>() {
 		    public void done(List<ParseObject> checkins, ParseException e) {
 		        if (e == null) {
+		        	// XXX: Can't ask for unique users
+		        	// so if they check in several times, we get them several times...
+		        	HashSet<String> seen = new HashSet<String>();;
 		        	ArrayList<Checkin> ret = new ArrayList<Checkin>();
 		        	for (ParseObject p: checkins){
-		        		ret.add(new Checkin(p));
+		        		Checkin checkin = new Checkin(p);
+		        		String objId = checkin.getUser().getObjectId();
+		        		if(!seen.contains(objId)) {
+		        			seen.add(objId);
+		        			ret.add(new Checkin(p));
+		        		}
 		        	}
 		        	cb.complete(ret);
 		        } else {
