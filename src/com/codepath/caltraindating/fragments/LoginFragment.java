@@ -7,7 +7,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -16,17 +15,20 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.codepath.caltraindating.R;
+import com.codepath.caltraindating.models.MultiAsyncExecutor;
+import com.codepath.caltraindating.models.MultiAsyncExecutor.Task;
 import com.facebook.HttpMethod;
 import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.model.GraphObject;
 import com.facebook.model.GraphUser;
 import com.parse.LogInCallback;
+import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 public class LoginFragment extends Fragment implements OnClickListener {
 
@@ -84,69 +86,132 @@ public class LoginFragment extends Fragment implements OnClickListener {
 
 	public void getFacebookDataInBackground(final boolean notifyListener) {
 		fbRequestsComplete = 0;
-		Bundle bundle = new Bundle();
+		final Bundle bundle = new Bundle();
 		String query = "SELECT src_big,src FROM photo WHERE aid IN (SELECT aid FROM album WHERE owner=me() AND name='Profile Pictures')";
 		bundle.putString("q", query);
-		Request photoRequest = new Request(ParseFacebookUtils.getSession(),
-				"/fql", bundle, HttpMethod.GET, new Request.Callback() {
+		
+		final MultiAsyncExecutor fbEx = new MultiAsyncExecutor(new MultiAsyncExecutor.OnAllComplete(){
+			@Override
+			public void complete() {
+				Log.e("tag","fb tasks all done");
+				if(notifyListener){
+					listener.fbDataUpdated();
+				}
+			}
+		});
+		fbEx.addTask(fbEx.new Task(){
+			@Override
+			public void start() {
+				Request photoRequest = new Request(ParseFacebookUtils.getSession(),
+						"/fql", bundle, HttpMethod.GET, new Request.Callback() {
 
-					@Override
-					public void onCompleted(Response response) {
-						GraphObject graphObject = response.getGraphObject();
-						if (graphObject != null) {
-							try {
-								JSONArray photos = graphObject
-										.getInnerJSONObject().getJSONArray(
-												"data");
-								ArrayList<String> srcs = new ArrayList<String>();
-								ArrayList<String> big_srcs = new ArrayList<String>();
-								for (int i = 0; i < photos.length(); i++) {
-									JSONObject obj = photos.getJSONObject(i);
-									Log.d("DEBUG",
-											"src:" + obj.getString("src"));
-									srcs.add(obj.getString("src"));
-									big_srcs.add(obj.getString("src_big"));
-									if (i > 9) {
-										break;
+							@Override
+							public void onCompleted(Response response) {
+								GraphObject graphObject = response.getGraphObject();
+								if (graphObject != null) {
+									try {
+										JSONArray photos = graphObject
+												.getInnerJSONObject().getJSONArray(
+														"data");
+										final ArrayList<String> srcs = new ArrayList<String>();
+										final ArrayList<String> big_srcs = new ArrayList<String>();
+										for (int i = 0; i < photos.length(); i++) {
+											JSONObject obj = photos.getJSONObject(i);
+											Log.d("DEBUG",
+													"src:" + obj.getString("src"));
+											srcs.add(obj.getString("src"));
+											big_srcs.add(obj.getString("src_big"));
+											if (i > 9) {
+												break;
+											}
+										}
+										final ParseUser currentUser = listener.getUser();
+										MultiAsyncExecutor mEx = new MultiAsyncExecutor(new MultiAsyncExecutor.OnAllComplete(){
+											@Override
+											public void complete() {
+												fbEx.completeItem();
+											}
+										});
+										
+										mEx.addTask(mEx.new Task(){
+											@Override
+											public void start() {
+												currentUser.removeAll("imgSrcs",currentUser.getList("imgSrcs"));
+												currentUser.saveInBackground(new SaveCallback(){
+													@Override
+													public void done(ParseException arg0) {
+														currentUser.addAllUnique("imgSrcs", srcs);
+														currentUser.saveInBackground(new SaveCallback(){
+															@Override
+															public void done(ParseException arg0) {
+																Log.e("tag","got small photos");
+																complete();
+															}
+														});
+													}
+												});
+											}
+										});
+										
+										mEx.addTask(mEx.new Task(){
+											@Override
+											public void start() {
+												currentUser.removeAll("imgBigSrcs",currentUser.getList("imgBigSrcs"));
+												currentUser.saveInBackground(new SaveCallback(){
+													@Override
+													public void done(ParseException arg0) {
+														currentUser.addAllUnique("imgBigSrcs", big_srcs);
+														currentUser.saveInBackground(new SaveCallback(){
+															@Override
+															public void done(ParseException arg0) {
+																Log.e("tag","got big photos");
+																complete();
+															}
+														});
+													}
+												});
+											}
+										});
+										
+										mEx.executeAll();
+									} catch (JSONException e) {
+										e.printStackTrace();
+										Log.e("tag", "json exception");
 									}
 								}
-								ParseUser currentUser = listener.getUser();
-								currentUser.addAllUnique("imgSrcs", srcs);
-								currentUser
-										.addAllUnique("imgBigSrcs", big_srcs);
-								currentUser.saveInBackground();
-								if (notifyListener) {
-									fbDataCheck();
+							}
+						});
+				photoRequest.executeAsync();
+			}});
+		
+		fbEx.addTask(fbEx.new Task(){
+			@Override
+			public void start() {
+				Request.newMeRequest(ParseFacebookUtils.getSession(),
+						new Request.GraphUserCallback() {
+							@Override
+							public void onCompleted(GraphUser user, Response response) {
+								if (user != null) {
+									ParseUser currentUser = listener.getUser();
+									currentUser.put("fbId", user.getId());
+									currentUser.put("firstName", user.getFirstName());
+									currentUser.put("lastName", user.getLastName());
+									currentUser.put("birthday", user.getBirthday());
+									currentUser.saveInBackground(new SaveCallback(){
+										@Override
+										public void done(ParseException arg0) {
+											Log.e("tag","got fb data");
+											complete();
+										}
+									});
+								} else {
+									Log.e("tag", "error getting facebook data");
 								}
-							} catch (JSONException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-								Log.e("tag", "json exception");
 							}
-						}
-					}
-				});
-		photoRequest.executeAsync();
-		Request.newMeRequest(ParseFacebookUtils.getSession(),
-				new Request.GraphUserCallback() {
-					@Override
-					public void onCompleted(GraphUser user, Response response) {
-						if (user != null) {
-							ParseUser currentUser = listener.getUser();
-							currentUser.put("fbId", user.getId());
-							currentUser.put("firstName", user.getFirstName());
-							currentUser.put("lastName", user.getLastName());
-							currentUser.put("birthday", user.getBirthday());
-							currentUser.saveInBackground();
-
-							if (notifyListener) {
-								fbDataCheck();
-							}
-						} else {
-							Log.e("tag", "error getting facebook data");
-						}
-					}
-				}).executeAsync();
+						}).executeAsync();
+			}});
+		fbEx.executeAll();
+		
 	}
 
 	public Listener getListener() {
