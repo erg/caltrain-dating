@@ -89,90 +89,62 @@ public class LoginFragment extends Fragment implements OnClickListener {
 		final Bundle bundle = new Bundle();
 		String query = "SELECT src_big,src FROM photo WHERE aid IN (SELECT aid FROM album WHERE owner=me() AND name='Profile Pictures')";
 		bundle.putString("q", query);
-		
-		final MultiAsyncExecutor fbEx = new MultiAsyncExecutor(new MultiAsyncExecutor.OnAllComplete(){
-			@Override
-			public void complete() {
-				Log.e("tag","fb tasks all done");
-				if(notifyListener){
-					listener.fbDataUpdated();
-				}
-			}
-		});
-		fbEx.addTask(fbEx.new Task(){
+
+		final MultiAsyncExecutor fbEx = new MultiAsyncExecutor(
+				new MultiAsyncExecutor.OnAllComplete() {
+					@Override
+					public void complete() {
+						Log.e("tag", "fb tasks all done");
+						if (notifyListener) {
+							listener.fbDataUpdated();
+						}
+					}
+				});
+		fbEx.addTask(fbEx.new Task() {
 			@Override
 			public void start() {
-				Request photoRequest = new Request(ParseFacebookUtils.getSession(),
-						"/fql", bundle, HttpMethod.GET, new Request.Callback() {
+				Request photoRequest = new Request(ParseFacebookUtils
+						.getSession(), "/fql", bundle, HttpMethod.GET,
+						new Request.Callback() {
 
 							@Override
 							public void onCompleted(Response response) {
-								GraphObject graphObject = response.getGraphObject();
+								GraphObject graphObject = response
+										.getGraphObject();
 								if (graphObject != null) {
 									try {
 										JSONArray photos = graphObject
-												.getInnerJSONObject().getJSONArray(
-														"data");
+												.getInnerJSONObject()
+												.getJSONArray("data");
 										final ArrayList<String> srcs = new ArrayList<String>();
 										final ArrayList<String> big_srcs = new ArrayList<String>();
 										for (int i = 0; i < photos.length(); i++) {
-											JSONObject obj = photos.getJSONObject(i);
+											JSONObject obj = photos
+													.getJSONObject(i);
 											Log.d("DEBUG",
-													"src:" + obj.getString("src"));
+													"src:"
+															+ obj.getString("src"));
 											srcs.add(obj.getString("src"));
-											big_srcs.add(obj.getString("src_big"));
+											big_srcs.add(obj
+													.getString("src_big"));
 											if (i > 9) {
 												break;
 											}
 										}
-										final ParseUser currentUser = listener.getUser();
-										MultiAsyncExecutor mEx = new MultiAsyncExecutor(new MultiAsyncExecutor.OnAllComplete(){
-											@Override
-											public void complete() {
-												fbEx.completeItem();
-											}
-										});
-										
-										mEx.addTask(mEx.new Task(){
-											@Override
-											public void start() {
-												currentUser.removeAll("imgSrcs",currentUser.getList("imgSrcs"));
-												currentUser.saveInBackground(new SaveCallback(){
+										final ParseUser currentUser = listener
+												.getUser();
+										MultiAsyncExecutor mEx = new MultiAsyncExecutor(
+												new MultiAsyncExecutor.OnAllComplete() {
 													@Override
-													public void done(ParseException arg0) {
-														currentUser.addAllUnique("imgSrcs", srcs);
-														currentUser.saveInBackground(new SaveCallback(){
-															@Override
-															public void done(ParseException arg0) {
-																Log.e("tag","got small photos");
-																complete();
-															}
-														});
+													public void complete() {
+														fbEx.completeItem();
 													}
 												});
-											}
-										});
-										
-										mEx.addTask(mEx.new Task(){
-											@Override
-											public void start() {
-												currentUser.removeAll("imgBigSrcs",currentUser.getList("imgBigSrcs"));
-												currentUser.saveInBackground(new SaveCallback(){
-													@Override
-													public void done(ParseException arg0) {
-														currentUser.addAllUnique("imgBigSrcs", big_srcs);
-														currentUser.saveInBackground(new SaveCallback(){
-															@Override
-															public void done(ParseException arg0) {
-																Log.e("tag","got big photos");
-																complete();
-															}
-														});
-													}
-												});
-											}
-										});
-										
+										mEx.addTask(buildPhotoTask(mEx,
+												"imgSrcs", srcs, currentUser));
+										mEx.addTask(buildPhotoTask(mEx,
+												"imgBigSrcs", big_srcs,
+												currentUser));
 										mEx.executeAll();
 									} catch (JSONException e) {
 										e.printStackTrace();
@@ -182,36 +154,65 @@ public class LoginFragment extends Fragment implements OnClickListener {
 							}
 						});
 				photoRequest.executeAsync();
-			}});
-		
-		fbEx.addTask(fbEx.new Task(){
+			}
+		});
+
+		fbEx.addTask(fbEx.new Task() {
 			@Override
 			public void start() {
 				Request.newMeRequest(ParseFacebookUtils.getSession(),
 						new Request.GraphUserCallback() {
 							@Override
-							public void onCompleted(GraphUser user, Response response) {
+							public void onCompleted(GraphUser user,
+									Response response) {
 								if (user != null) {
 									ParseUser currentUser = listener.getUser();
 									currentUser.put("fbId", user.getId());
-									currentUser.put("firstName", user.getFirstName());
-									currentUser.put("lastName", user.getLastName());
-									currentUser.put("birthday", user.getBirthday());
-									currentUser.saveInBackground(new SaveCallback(){
-										@Override
-										public void done(ParseException arg0) {
-											Log.e("tag","got fb data");
-											complete();
-										}
-									});
+									currentUser.put("firstName",
+											user.getFirstName());
+									currentUser.put("lastName",
+											user.getLastName());
+									currentUser.put("birthday",
+											user.getBirthday());
+									currentUser
+											.saveInBackground(new SaveCallback() {
+												@Override
+												public void done(
+														ParseException arg0) {
+													complete();
+												}
+											});
 								} else {
 									Log.e("tag", "error getting facebook data");
 								}
 							}
 						}).executeAsync();
-			}});
+			}
+		});
 		fbEx.executeAll();
-		
+
+	}
+
+	private Task buildPhotoTask(MultiAsyncExecutor mEx, final String key,
+			final ArrayList<String> srcs, final ParseUser currentUser) {
+		return mEx.new Task() {
+			@Override
+			public void start() {
+				currentUser.removeAll(key, currentUser.getList(key));
+				currentUser.saveInBackground(new SaveCallback() {
+					@Override
+					public void done(ParseException arg0) {
+						currentUser.addAllUnique(key, srcs);
+						currentUser.saveInBackground(new SaveCallback() {
+							@Override
+							public void done(ParseException arg0) {
+								complete();
+							}
+						});
+					}
+				});
+			}
+		};
 	}
 
 	public Listener getListener() {
