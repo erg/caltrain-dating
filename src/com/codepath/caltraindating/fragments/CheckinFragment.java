@@ -162,6 +162,7 @@ public class CheckinFragment extends Fragment implements OnClickListener, TrainD
 				trainStations.addAll(stopsAhead);
 				stationAdapter.notifyDataSetChanged();
 				trainStops.setSelection(Train.indexOfUsualStop(stopsAhead, currentTrain));
+				currentTrain.setUsualStop(stopsAhead.get(0).getStationId());
 			}else{
 				checkIn.setVisibility(View.INVISIBLE);
 				trainStops.setVisibility(View.INVISIBLE);
