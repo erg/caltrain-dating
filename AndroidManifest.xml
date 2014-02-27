@@ -28,7 +28,6 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name="com.codepath.caltraindating.MainActivity"
-            android:theme="@android:style/Theme.NoTitleBar"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
