@@ -2,6 +2,7 @@ package com.codepath.caltraindating;
 
 
 import java.security.MessageDigest;
+import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -20,8 +21,9 @@ import android.widget.TextView;
 
 import com.codepath.caltraindating.fragments.CheckinFragment;
 import com.codepath.caltraindating.fragments.LoginFragment;
-import com.codepath.caltraindating.fragments.MyProfileFragment;
+import com.codepath.caltraindating.fragments.ViewProfileFragment;
 import com.codepath.caltraindating.fragments.RidersFragment;
+import com.codepath.caltraindating.models.Checkin;
 import com.codepath.caltraindating.models.Schedule;
 import com.codepath.caltraindating.models.Train;
 import com.parse.Parse;
@@ -31,7 +33,7 @@ import com.parse.ParseUser;
 public class MainActivity extends FragmentActivity implements CheckinFragment.Listener, RidersFragment.Listener, LoginFragment.Listener {
 	
 	LoginFragment loginFragment;
-	MyProfileFragment myProfileFragment;
+	ViewProfileFragment myProfileFragment;
 	CheckinFragment checkinFragment;
 	RidersFragment ridersFragment;
 	ParseUser currentUser = null;
@@ -44,7 +46,7 @@ public class MainActivity extends FragmentActivity implements CheckinFragment.Li
 		ParseFacebookUtils.initialize(getResources().getString(R.string.app_id));
 		loginFragment = new LoginFragment();
 		loginFragment.setListener(this);
-		myProfileFragment = new MyProfileFragment();
+		myProfileFragment = new ViewProfileFragment();
 		myProfileFragment.setListener(this);
 		checkinFragment = new CheckinFragment();
 		checkinFragment.setListener(this);
@@ -78,7 +80,6 @@ public class MainActivity extends FragmentActivity implements CheckinFragment.Li
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
@@ -88,13 +89,18 @@ public class MainActivity extends FragmentActivity implements CheckinFragment.Li
                 .commitAllowingStateLoss();
     }
 	
+	// XXX: Do this instead?
+	// http://stackoverflow.com/questions/7992216/android-fragment-handle-back-button-press
+	public void switchToFragmentBack(Fragment newFrag) {
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, newFrag)
+                .addToBackStack("fooTag").commitAllowingStateLoss();
+    }
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 	  super.onActivityResult(requestCode, resultCode, data);
 	  ParseFacebookUtils.finishAuthentication(requestCode, resultCode, data);
 	}
-	
-	
 
 	@Override
 	public ParseUser getUser() {
@@ -115,6 +121,5 @@ public class MainActivity extends FragmentActivity implements CheckinFragment.Li
 	@Override
 	public void fbDataUpdated() {
 		switchToFragment(checkinFragment);
-//		switchToFragment(myProfileFragment);
 	}
 }

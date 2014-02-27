@@ -1,11 +1,15 @@
 package com.codepath.caltraindating.models;
 
-public class ChatModel {
+import java.io.Serializable;
 
-	private RiderModel riderChatTo;
+public class ChatModel implements Serializable {
+
+	private static final long serialVersionUID = 5435489425351745526L;
 	private String chatName;
+	private String chatImage;
 	private String chatTime;
 	private String chatMessage;
+
 	
 	private boolean bComingMessage = true;
 	
@@ -17,6 +21,14 @@ public class ChatModel {
 	    this.chatName = chatName;
 	}
 	
+	public String getChatImage() {
+		return chatImage;
+	}
+
+	public void setChatImage(String chatImage) {
+		this.chatImage = chatImage;
+	}
+
 	public String getChatTime() {
 	    return chatTime;
 	}
@@ -41,25 +53,20 @@ public class ChatModel {
 		this.bComingMessage = bComingMessage;
 	}
 	
-	public RiderModel getRiderChatTo() {
-		return riderChatTo;
-	}
-
-	public void setRiderChatTo(RiderModel riderChatTo) {
-		this.riderChatTo = riderChatTo;
-	}
-
 	public ChatModel() {
 	}
 	
-	public ChatModel(String chatName, String chatTime, String chatMessage, boolean bComingMessage) {
+	public ChatModel(String chatName, String chatImage, String chatTime, String chatMessage, boolean bComingMessage) {
 	    super();
 	    this.chatName = chatName;
+	    this.chatImage = chatImage;
 	    this.chatTime = chatTime;
 	    this.chatMessage = chatMessage;
 	    this.bComingMessage = bComingMessage;
 	}
 	
-	
+	public String toString() {
+		return "name=" + chatName + ", image=" + chatImage + ", time=" + chatTime + ", message=" + chatMessage + ", isComing=" + bComingMessage;
+	}
 
 }
