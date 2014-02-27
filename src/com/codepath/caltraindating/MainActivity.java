@@ -89,6 +89,8 @@ public class MainActivity extends FragmentActivity implements CheckinFragment.Li
                 .commitAllowingStateLoss();
     }
 	
+	// XXX: Do this instead?
+	// http://stackoverflow.com/questions/7992216/android-fragment-handle-back-button-press
 	public void switchToFragmentBack(Fragment newFrag) {
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, newFrag)
                 .addToBackStack("fooTag").commitAllowingStateLoss();
