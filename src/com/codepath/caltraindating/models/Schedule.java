@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Set;
 
 import android.app.Activity;
 import android.util.Log;
@@ -48,6 +49,13 @@ public class Schedule {
 	
 	public static Long getArrivalTime(String train, int destination) {
 		ArrayList<Stop> times = getTrainTimes(train);
+		for(Stop s : times){
+			if(s == null){
+				Log.e("tag","stop for train is null");
+			}else{
+				Log.e("tag","stop for train "+s.getStop()+" : "+s.getStationId());
+			}
+		}
 		Stop s = times.get(destination);
 		if(s != null){
 			return s.getTimeMillis();
@@ -69,6 +77,7 @@ public class Schedule {
 	
 	public static ArrayList<Stop> getStopsAheadOfTrain(Train t, Date d){
 		ArrayList<Stop> ret = new ArrayList<Stop>();
+		
 		Long millis = d.getTime();	
 		ArrayList<Stop> trainStops = getTrainTimes(t.getId());
 		int stopSize = trainStops.size();
@@ -83,10 +92,12 @@ public class Schedule {
 			for(int i=0;i<stopSize;i++){
 				Stop stop = trainStops.get(i);
 				if(stop != null && stop.getTimeMillis() > millis){
+					Log.e("tag","stop time: "+dateString(stop.getDateTime())+" , now: "+dateString(d));
 					ret.add(stop);
 				}
 			}
 		}
+		Log.e("tag","stops ahead of train: "+t.getId()+",  "+dateString(d)+ " , "+ret.size());
 		return ret;
 	}
 	
@@ -136,10 +147,21 @@ public class Schedule {
 		Date now = getNow();
 		long hours3 = 3600*1000*3;
 		if(now.getTime() - prevMid.getTime() < hours3){
-			//return target + 1 day
-			return incrementTime(target,24,0,0,0);
+			//we are in the 12am-3am range, so report "yesterday" time
+			if(target.getTime() - prevMid.getTime() < hours3){
+				return target;
+			}else{
+				//return target - 1 day
+				return incrementTime(target,-24,0,0,0);
+			}
 		}else{
-			return target;
+			//in the middle of the day
+			if(target.getTime() - prevMid.getTime() < hours3){
+				//return target + 1 day
+				return incrementTime(target,24,0,0,0);
+			}else{
+				return target;
+			}
 		}
 	}
 	
@@ -152,6 +174,22 @@ public class Schedule {
 			return weekendNorthSchedule.get(train);
 		}else{
 			return weekendSouthSchedule.get(train);
+		}
+	}
+	
+	public static void printWeekdaySouth(){
+		
+		Set<String> keyset = weekdaySouthSchedule.keySet();
+		for(String s: keyset){
+			String line = "";
+			for(Stop stop: weekdaySouthSchedule.get(s)){
+				if(stop == null){
+					line += "--- ,";
+				}else{
+				line += stop.getStop()+", ";
+				}
+			}
+			Log.e("tag","train: "+s+" : "+line);
 		}
 	}
 	
@@ -180,6 +218,7 @@ public class Schedule {
 						}
 					}
 				}else{
+					Log.e("tag","train stop: "+split[0]);
 					stopNames.put(i-1, split[0]);
 					stopNamesList.add(split[0]);
 					for(int j=1;j<split.length;j++){
@@ -197,8 +236,10 @@ public class Schedule {
 							times = weekdaySouthSchedule.get(num);
 							north = false;
 						}else if(Arrays.asList(weekendNorthTrains).contains(num)){
+							Log.e("tag","WEEKEND NORTH TRAIN ADD");
 							times = weekendNorthSchedule.get(num);
 						}else{
+							Log.e("tag","WEEKEND SOUTH TRAIN ADD");
 							times = weekendSouthSchedule.get(num);
 							north = false;
 						}
@@ -216,6 +257,7 @@ public class Schedule {
 			}
 			is.close();
 			br.close();
+			printWeekdaySouth();
 		}catch (IOException e){
 			e.printStackTrace();
 		}

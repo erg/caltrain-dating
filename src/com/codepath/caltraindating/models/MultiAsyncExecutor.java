@@ -1,7 +1,6 @@
 package com.codepath.caltraindating.models;
 
 import java.util.ArrayList;
-import com.codepath.caltraindating.models.Callback;
 
 public class MultiAsyncExecutor {
 	private int taskCount = 0;
