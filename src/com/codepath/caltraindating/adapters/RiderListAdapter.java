@@ -36,6 +36,12 @@ public class RiderListAdapter extends ArrayAdapter<Checkin> {
 		this.checkins = checkins;
 	}
 
+	// Don't let them click the listview items themselves
+	@Override
+	public boolean isEnabled(int position) {
+		return false;
+	}
+
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
 		// Get the data item for this position
