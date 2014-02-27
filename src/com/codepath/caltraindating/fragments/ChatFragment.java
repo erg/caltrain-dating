@@ -52,7 +52,7 @@ public class ChatFragment extends Fragment implements OnClickListener {
 	private ParseUser riderOwn;
 	private ParseUser riderChatTo;
 
-	private static SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+	private static SimpleDateFormat sdf = new SimpleDateFormat("h:mm a");
 
 	// listener is the activity itself
     private OnProfileClickListener profileClickListener;
@@ -224,6 +224,7 @@ public class ChatFragment extends Fragment implements OnClickListener {
 				break;
 			case R.id.btnBack:
 				ChatHolder.getInstance().saveOrUpdate(riderChatToId, chatList);
+				
 				getActivity().finish();
 				break;
 			case R.id.btnRiderProfile:
@@ -256,7 +257,7 @@ public class ChatFragment extends Fragment implements OnClickListener {
 		                                             "\"}");
 		        // Log.d("DEBUG", "json message=" + chatData.toString());
 	            ParsePush push = new ParsePush();
-	            String channel = riderChatToId + "-" + riderOwnId;
+	            String channel = riderOwnId + "-" + riderChatToId;
 	            push.setChannel(channel);
 	            push.setData(chatData);
 	            push.sendInBackground();

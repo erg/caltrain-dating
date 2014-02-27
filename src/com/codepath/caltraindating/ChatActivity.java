@@ -1,7 +1,8 @@
 package com.codepath.caltraindating;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Date;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,6 +41,8 @@ public class ChatActivity extends FragmentActivity implements ChatFragment.OnPro
     String riderChatToId;
     ArrayList<ChatModel> currentChatHistory;
     
+    BroadcastReceiver pushReceiver;
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -58,7 +61,7 @@ public class ChatActivity extends FragmentActivity implements ChatFragment.OnPro
         }
         // Set Parse push receiver
         IntentFilter intentFilter = new IntentFilter("com.codepath.caltraindating.CHAT");
-        BroadcastReceiver pushReceiver = new BroadcastReceiver() {
+        pushReceiver = new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
       	        // String action = intent.getAction();
     	        // String channel = intent.getExtras().getString("com.parse.Channel");
@@ -200,15 +203,8 @@ public class ChatActivity extends FragmentActivity implements ChatFragment.OnPro
 	}
 
 	private String getCurrentMessageTime() {
-        Calendar c = Calendar.getInstance();
-
-        String hour = String.valueOf(c.get(Calendar.HOUR_OF_DAY));
-        String minute = String.valueOf(c.get(Calendar.MINUTE));
-        
-        StringBuffer sbBuffer = new StringBuffer();
-        sbBuffer.append(hour + ":" + minute); 
-        						
-        return sbBuffer.toString();
+		SimpleDateFormat sdf = new SimpleDateFormat("h:mm a");
+		return sdf.format(new Date());
 	}
 	
     public Fragment getChatFragment() {
@@ -218,4 +214,12 @@ public class ChatActivity extends FragmentActivity implements ChatFragment.OnPro
     	else
     		return null;
     }
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+		unregisterReceiver(pushReceiver);
+	}
+    
+    
 }
