@@ -243,8 +243,7 @@ public class ChatFragment extends Fragment implements OnClickListener {
 		    chat.setChatName(getUserDisplayName(riderOwn));
 		    chat.setComingMessage(false);
 		    chat.setChatMessage(chatMessage);
-		    if (riderOwn.getJSONArray("imgSrcs")!=null && riderOwn.getJSONArray("imgSrcs").length()>0)
-		        chat.setChatImage(getUserImage(riderOwn));
+		    chat.setChatImage(getUserImage(riderOwn));
 			
 		    chatList.add(chat);
 		    adapterChatView.notifyDataSetChanged();
@@ -252,12 +251,13 @@ public class ChatFragment extends Fragment implements OnClickListener {
 		    etMessage.setText("");
 			
 		    try {
-		        JSONObject chatData = new JSONObject("{\"action\": \"com.codepath.caltraindating.CHAT\", \"message\": \"" + chatMessage +  
-		    	   	                                 "\", \"name\": \"" + getUserDisplayName(riderOwn) + "\", \"image\": \"" + chat.getChatImage() +
+		    	String returnMessage = chatMessage.substring(0, chatMessage.length()-1) + "!";
+		        JSONObject chatData = new JSONObject("{\"action\": \"com.codepath.caltraindating.CHAT\", \"message\": \"" + returnMessage +  
+		    	   	                                 "\", \"name\": \"" + getUserDisplayName(riderChatTo) + "\", \"image\": \"" + getUserImage(riderChatTo) +
 		                                             "\"}");
 		        // Log.d("DEBUG", "json message=" + chatData.toString());
 	            ParsePush push = new ParsePush();
-	            String channel = riderOwnId + "-" + riderChatToId;
+	            String channel = riderChatToId + "-" + riderOwnId;
 	            push.setChannel(channel);
 	            push.setData(chatData);
 	            push.sendInBackground();

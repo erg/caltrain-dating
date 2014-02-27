@@ -218,6 +218,7 @@ public class ChatActivity extends FragmentActivity implements ChatFragment.OnPro
 	@Override
 	protected void onStop() {
 		super.onStop();
+		ChatHolder.getInstance().saveOrUpdate(riderChatToId, currentChatHistory);
 		unregisterReceiver(pushReceiver);
 	}
     
