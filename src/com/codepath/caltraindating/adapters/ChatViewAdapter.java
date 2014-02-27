@@ -8,10 +8,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.codepath.caltraindating.R;
 import com.codepath.caltraindating.models.ChatModel;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class ChatViewAdapter extends BaseAdapter {
 	
@@ -65,8 +67,9 @@ public class ChatViewAdapter extends BaseAdapter {
 			  }
 
 	    	  viewHolder = new ViewHolder();
-			  viewHolder.tvChatTime = (TextView) convertView.findViewById(R.id.tvChatTime);
 			  viewHolder.tvChatName = (TextView) convertView.findViewById(R.id.tvChatName);
+			  viewHolder.ivChatImage = (ImageView) convertView.findViewById(R.id.ivRiderImage);
+			  viewHolder.tvChatTime = (TextView) convertView.findViewById(R.id.tvChatTime);
 			  viewHolder.tvChatMessage = (TextView) convertView.findViewById(R.id.tvChatMessage);
 			  viewHolder.bComingMessage = bComingMessage;
 			  
@@ -79,14 +82,17 @@ public class ChatViewAdapter extends BaseAdapter {
 	    viewHolder.tvChatTime.setText(chat.getChatTime());
 	    viewHolder.tvChatName.setText(chat.getChatName());
 	    viewHolder.tvChatMessage.setText(chat.getChatMessage());
+	    if (chat.getChatImage()!=null)
+		    ImageLoader.getInstance().displayImage(chat.getChatImage(), viewHolder.ivChatImage);
 	    
 	    return convertView;
     }
     
 
     static class ViewHolder { 
-        public TextView tvChatTime;
         public TextView tvChatName;
+        public ImageView ivChatImage;
+        public TextView tvChatTime;
         public TextView tvChatMessage;
         public boolean bComingMessage = true;
     }
