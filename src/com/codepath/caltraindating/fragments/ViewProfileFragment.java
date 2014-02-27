@@ -18,7 +18,7 @@ import com.codepath.caltraindating.adapters.SmartFragmentStatePagerAdapter;
 import com.codepath.caltraindating.fragments.LoginFragment.Listener;
 import com.parse.ParseUser;
 
-public class MyProfileFragment extends Fragment {
+public class ViewProfileFragment extends Fragment {
 
 	Listener listener = null;
 	private SmartFragmentStatePagerAdapter adapterViewPager;
@@ -30,16 +30,40 @@ public class MyProfileFragment extends Fragment {
 	TextView tvBlurb;
 	String age;
 	ParseUser currentUser;
-
+	
+	boolean isUser;
+	int position;
+	
+	public static ViewProfileFragment newInstance(boolean isUser, int position) {
+		ViewProfileFragment myProfileFragment = new ViewProfileFragment();
+        Bundle args = new Bundle();
+        args.putBoolean("isUser", isUser);
+        args.putInt("position", position);
+        myProfileFragment.setArguments(args);
+        return myProfileFragment;
+	}
+	
+	public ParseUser getMyUser() {
+		if(isUser) {
+			return listener.getUser();
+		} else {
+			return RidersFragment.checkins.get(position).getUser();
+		}
+	}
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		
+		isUser = getArguments().getBoolean("isUser");
+		position = getArguments().getInt("position");
+		
 		view = inflater.inflate(R.layout.fragment_my_profile, container,
 				false);
 		vpPager = (ViewPager)view.findViewById(R.id.vpImages);
 
-		currentUser = listener.getUser();
-
+		currentUser = getMyUser();
+		
 		tvFirstName = (TextView)view.findViewById(R.id.tvFirstName);
 		tvFirstName.setText((String)currentUser.get("firstName"));
 
@@ -48,12 +72,12 @@ public class MyProfileFragment extends Fragment {
 		tvAge.setText(age);		
 		
 		tvBlurb = (TextView)view.findViewById(R.id.tvBlurb);
-		//tvBlurb.setText((String)currentUser.get("blurb")); // todo
+		tvBlurb.setText((String)currentUser.get("blurb")); // todo
 		tvBlurb.setMovementMethod(new ScrollingMovementMethod());
 
-		adapterViewPager = new MyProfileFragment.MyPagerAdapter(
+		adapterViewPager = new ViewProfileFragment.MyPagerAdapter(
 				this.getFragmentManager(), inflater, container,
-				savedInstanceState, listener);
+				savedInstanceState, currentUser);
 
         vpPager.setAdapter(adapterViewPager);
 		return view;
@@ -87,12 +111,10 @@ public class MyProfileFragment extends Fragment {
 
 		public MyPagerAdapter(FragmentManager fragmentManager,
 				LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState, Listener listener) {
+				Bundle savedInstanceState, ParseUser user) {
 			super(fragmentManager);
 			
-			this.listener = listener;
-			this.currentUser = listener.getUser();
-
+			this.currentUser = user;
 			view = inflater.inflate(R.layout.fragment_profile_image,
 					container, false);
 			

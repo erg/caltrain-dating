@@ -2,16 +2,20 @@ package com.codepath.caltraindating.adapters;
 
 import java.util.ArrayList;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.codepath.caltraindating.CaltrainUtils;
+import com.codepath.caltraindating.MainActivity;
 import com.codepath.caltraindating.R;
+import com.codepath.caltraindating.fragments.ViewProfileFragment;
 import com.codepath.caltraindating.models.Checkin;
 import com.parse.ParseUser;
 import com.squareup.picasso.Picasso;
@@ -19,12 +23,17 @@ import com.squareup.picasso.Picasso;
 
 public class RiderListAdapter extends ArrayAdapter<Checkin> {
 
-	public RiderListAdapter(Context context, ArrayList<Checkin> checkins) {
+	MainActivity mainActivity;
+	ArrayList<Checkin> checkins;
+	
+	public RiderListAdapter(Context context, Activity activity, ArrayList<Checkin> checkins) {
 		super(context, 0, checkins);
+		this.mainActivity = (MainActivity) activity;
+		this.checkins = checkins;
 	}
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         // Get the data item for this position
         ParseUser rider = getItem(position).getUser();
         // Check if an existing view is being reused, otherwise inflate the view
@@ -35,6 +44,16 @@ public class RiderListAdapter extends ArrayAdapter<Checkin> {
         
         ImageView ivProfileThumbnail = (ImageView)convertView.findViewById(R.id.ivProfileThumbnail);
         
+        //View row = super.getView(position, convertView, parent);
+
+        ivProfileThumbnail.setOnClickListener(new OnClickListener() {
+        	@Override
+        	public void onClick(View v) {
+        		ViewProfileFragment profileFragment = ViewProfileFragment.newInstance(false, position);
+        		mainActivity.switchToFragmentBack(profileFragment);
+        	}
+		});
+
         ArrayList<String> thumbnails = (ArrayList<String>)rider.get("imgSrcs");
         if(thumbnails.size() > 0) {
         	String url = thumbnails.get(0);
@@ -46,7 +65,6 @@ public class RiderListAdapter extends ArrayAdapter<Checkin> {
         TextView tvAge = (TextView)convertView.findViewById(R.id.tvAge);
 		String age = CaltrainUtils.calculateAge(convertView.getContext(), (String)rider.get("birthday"));
 		tvAge.setText(age);		
-
         
         return convertView;
     }
