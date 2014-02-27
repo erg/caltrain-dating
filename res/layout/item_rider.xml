@@ -36,6 +36,6 @@
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
         android:paddingTop="20dp"
-        android:text="Ping" />
+        android:text="Chat" />
 
 </LinearLayout>
