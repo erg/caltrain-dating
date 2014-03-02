@@ -204,6 +204,8 @@ public class CheckinFragment extends Fragment implements OnClickListener, TrainD
 				recentTrains.clear();
 				if(trains.size()>0){
 					currentTrain = trains.get(0);
+				}else{
+					showTrainDialog();
 				}
 				for(Train t: trains){
 					recentTrains.add(t);
