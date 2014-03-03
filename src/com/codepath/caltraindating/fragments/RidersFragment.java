@@ -9,11 +9,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.ListView;
 
 import com.codepath.caltraindating.R;
-import com.codepath.caltraindating.adapters.ChatViewAdapter;
 import com.codepath.caltraindating.adapters.RiderListAdapter;
 import com.codepath.caltraindating.models.Callback;
 import com.codepath.caltraindating.models.Checkin;
@@ -21,10 +19,13 @@ import com.codepath.caltraindating.models.Schedule;
 import com.codepath.caltraindating.models.Train;
 import com.parse.ParseUser;
 
+import eu.erikw.PullToRefreshListView;
+import eu.erikw.PullToRefreshListView.OnRefreshListener;
+
 public class RidersFragment extends Fragment{
 	Train currentTrain = null;
 	Listener listener = null;
-	ListView lvRiders;
+	PullToRefreshListView lvRiders;
 	RiderListAdapter riderListAdapter;
 	Activity activity;
 	// XXX: Sorry about static!
@@ -39,9 +40,17 @@ public class RidersFragment extends Fragment{
 			Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
 		View v = inflater.inflate(R.layout.fragment_riders, container,false);
-		lvRiders = (ListView)v.findViewById(R.id.lvRiders);
-		
+		lvRiders = (PullToRefreshListView)v.findViewById(R.id.lvRiders);
 		loadRiders(currentTrain);
+		lvRiders.setOnRefreshListener(new OnRefreshListener() {
+	          @Override
+	          public void onRefresh() {
+	  	          riderListAdapter.clear();
+	  	          loadRiders(currentTrain);
+  	              lvRiders.onRefreshComplete();
+	          }
+	      });
+		
 		return v;		
 	}
 

@@ -109,7 +109,7 @@ public class RiderListAdapter extends ArrayAdapter<Checkin> {
 		        }
 				
 				ChatFragment chatFragment = ChatFragment.newInstance(riderOwnId, riderChatToId);
-				mainActivity.switchToFragment(chatFragment, "CHAT");
+				mainActivity.slideLeftToFragment(chatFragment, "CHAT");
 			}
 		});
 

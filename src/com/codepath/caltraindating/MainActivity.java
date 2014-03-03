@@ -18,6 +18,7 @@ import android.content.pm.Signature;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
@@ -142,6 +143,20 @@ public class MainActivity extends FragmentActivity
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, newFrag, fragTag)
                 .commitAllowingStateLoss();
     }
+
+	public void slideRightToFragment(Fragment newFrag, String fragTag) {
+		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();       
+		transaction.setCustomAnimations(R.anim.slide_left_in, R.anim.slide_right_out);
+		transaction.replace(R.id.fragment_container, newFrag, fragTag);
+		transaction.commitAllowingStateLoss();
+    }
+
+	public void slideLeftToFragment(Fragment newFrag, String fragTag) {
+		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();       
+		transaction.setCustomAnimations(R.anim.slide_right_in, R.anim.slide_left_out);
+		transaction.replace(R.id.fragment_container, newFrag, fragTag);
+		transaction.commitAllowingStateLoss();
+    }
 	
 	// XXX: Do this instead?
 	// http://stackoverflow.com/questions/7992216/android-fragment-handle-back-button-press
@@ -181,13 +196,13 @@ public class MainActivity extends FragmentActivity
 	public void onProfileButtonClick(String riderId) {
 		ViewProfileFragment profileFragment = ViewProfileFragment
 				.newInstance(riderId);
-		switchToFragment(profileFragment, PROFILE_FRAGMENT_TAG);
+		slideLeftToFragment(profileFragment, PROFILE_FRAGMENT_TAG);
 		
 	}
 
 	@Override
 	public void onBackButtonClick() {
-		switchToFragment(ridersFragment, RIDERS_FRAGMENT_TAG);
+		slideRightToFragment(ridersFragment, RIDERS_FRAGMENT_TAG);
 	}
 	
 	@Override
@@ -195,11 +210,11 @@ public class MainActivity extends FragmentActivity
 		ViewProfileFragment fProfile = (ViewProfileFragment)getSupportFragmentManager().findFragmentByTag(PROFILE_FRAGMENT_TAG);
         if (fProfile!=null && fProfile.isVisible() && fProfile.getPosition() == -1) {
         	ChatFragment chatFragment = ChatFragment.newInstance(getCurrentUserId(), fProfile.getProfileUserId());
-			switchToFragment(chatFragment, "CHAT");
+        	slideRightToFragment(chatFragment, "CHAT");
         } else {
         	ChatFragment fChat = (ChatFragment)getSupportFragmentManager().findFragmentByTag(CHAT_FRAGMENT_TAG);
     		if (fChat!=null && fChat.isVisible()) {
-    			switchToFragment(ridersFragment, RIDERS_FRAGMENT_TAG);
+    			slideRightToFragment(ridersFragment, RIDERS_FRAGMENT_TAG);
     		}
     		else 
         	    super.onBackPressed();
