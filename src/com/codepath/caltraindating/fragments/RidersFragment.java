@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ListView;
 
 import com.codepath.caltraindating.R;
@@ -39,10 +40,20 @@ public class RidersFragment extends Fragment{
 		super.onCreateView(inflater, container, savedInstanceState);
 		View v = inflater.inflate(R.layout.fragment_riders, container,false);
 		lvRiders = (ListView)v.findViewById(R.id.lvRiders);
+		
 		loadRiders(currentTrain);
 		return v;		
 	}
-	
+
+
+    public void showProgressBar() {
+	    getActivity().setProgressBarIndeterminateVisibility(true);
+	}
+	    
+	public void hideProgressBar() {
+	  	getActivity().setProgressBarIndeterminateVisibility(false);
+	}
+
 
 	@Override
     public void onAttach(Activity activity) {
@@ -51,13 +62,14 @@ public class RidersFragment extends Fragment{
     }
 
 	private void loadRiders(Train t){
+		showProgressBar();
 		Checkin.getCheckins(listener.getUser(), currentTrain, Schedule.getNow(), new Callback<ArrayList<Checkin>>(){
 			@Override
 			public void complete(ArrayList<Checkin> checkins) {
 				RidersFragment.checkins = checkins;
 				riderListAdapter = new RiderListAdapter(getActivity(), activity, (ArrayList<Checkin>) checkins);
 		        lvRiders.setAdapter(riderListAdapter);
-				
+				hideProgressBar();
 				for(Checkin c: checkins){
 					Log.d("tag","got checkin: "+c.getUser().getObjectId());
 //					Log.d("tag","got checkin: "+c.getUser().getString("firstName"));

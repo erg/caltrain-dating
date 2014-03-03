@@ -21,6 +21,7 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
+import android.view.Window;
 
 import com.codepath.caltraindating.fragments.ChatFragment;
 import com.codepath.caltraindating.fragments.CheckinFragment;
@@ -64,7 +65,9 @@ public class MainActivity extends FragmentActivity
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+	    requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.activity_main);
+
 	    ParseObject.registerSubclass(ChatInParse.class);
 		Parse.initialize(this, getResources().getString(R.string.parseId), getResources().getString(R.string.parseKey));
 		ParseFacebookUtils.initialize(getResources().getString(R.string.app_id));
