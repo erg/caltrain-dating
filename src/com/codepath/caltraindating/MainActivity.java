@@ -69,8 +69,8 @@ public class MainActivity extends FragmentActivity
 	    requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.activity_main);
 
-	    ParseObject.registerSubclass(ChatInParse.class);
 		Parse.initialize(this, getResources().getString(R.string.parseId), getResources().getString(R.string.parseKey));
+	    ParseObject.registerSubclass(ChatInParse.class);
 		ParseFacebookUtils.initialize(getResources().getString(R.string.app_id));
 		loginFragment = new LoginFragment();
 		loginFragment.setListener(this);
