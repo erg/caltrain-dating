@@ -118,6 +118,14 @@ public class ViewProfileFragment extends Fragment {
 		this.listener = listener;
 	}
 
+	public String getProfileUserId() {
+		return currentUser.getObjectId();
+	}
+
+	public int getPosition() {
+		return position;
+	}
+
 	// Extend from SmartFragmentStatePagerAdapter now instead for more dynamic
 	// ViewPager items
 	public static class MyPagerAdapter extends SmartFragmentStatePagerAdapter {

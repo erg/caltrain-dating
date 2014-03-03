@@ -184,8 +184,24 @@ public class MainActivity extends FragmentActivity
 
 	@Override
 	public void onBackButtonClick() {
-		switchToFragmentBack(ridersFragment);
+		switchToFragment(ridersFragment, RIDERS_FRAGMENT_TAG);
 	}
+	
+	@Override
+    public void onBackPressed() {
+		ViewProfileFragment fProfile = (ViewProfileFragment)getSupportFragmentManager().findFragmentByTag(PROFILE_FRAGMENT_TAG);
+        if (fProfile!=null && fProfile.isVisible() && fProfile.getPosition() == -1) {
+        	ChatFragment chatFragment = ChatFragment.newInstance(getCurrentUserId(), fProfile.getProfileUserId());
+			switchToFragment(chatFragment, "CHAT");
+        } else {
+        	ChatFragment fChat = (ChatFragment)getSupportFragmentManager().findFragmentByTag(CHAT_FRAGMENT_TAG);
+    		if (fChat!=null && fChat.isVisible()) {
+    			switchToFragment(ridersFragment, RIDERS_FRAGMENT_TAG);
+    		}
+    		else 
+        	    super.onBackPressed();
+        }
+    }
 	
 	public String getCurrentUserId() {
 		return currentUserId;
@@ -218,8 +234,11 @@ public class MainActivity extends FragmentActivity
     			fChat.getAdapterChatView().notifyDataSetChanged();
     			fChat.focusOnLatestMessge();
     		}
-    		else 
-                ChatHolder.getInstance().addNewChat(chatFromUserId, chat, true);
+    		else {
+    			if (ChatHolder.getInstance().retrieve(chatFromUserId)==null)
+    				ChatHolder.getInstance().initialize(chatFromUserId);
+    			ChatHolder.getInstance().addNewChat(chatFromUserId, chat, true);
+    		}
     		RidersFragment fRiders = (RidersFragment)getSupportFragmentManager().findFragmentByTag(RIDERS_FRAGMENT_TAG);
     		if (fRiders!=null &&fRiders.isVisible()) {
     			fRiders.setMessageNotice(chatFromUserId);

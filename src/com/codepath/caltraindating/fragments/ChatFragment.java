@@ -220,10 +220,11 @@ public class ChatFragment extends Fragment implements OnClickListener {
 		    addToChatList(riderChatToId, chat);
 		    
 		    adapterChatView.notifyDataSetChanged();
+		    focusOnLatestMessge();
 		    etMessage.setText("");
 			
 		    try {
-		    	/* This is for testing 
+		    	/* This is for testing
 		    	String returnMessage = chatMessage.substring(0, chatMessage.length()-1) + "!";
 		        JSONObject chatData = new JSONObject("{\"action\": \"com.codepath.caltraindating.CHAT\", \"message\": \"" + returnMessage +  
 		    	   	                                 "\", \"name\": \"" + getUserDisplayName(riderChatTo) + "\", \"image\": \"" + getUserImage(riderChatTo) +
@@ -233,11 +234,10 @@ public class ChatFragment extends Fragment implements OnClickListener {
 		        JSONObject chatData = new JSONObject("{\"action\": \"com.codepath.caltraindating.CHAT\", \"message\": \"" + chatMessage +  
                                                      "\", \"name\": \"" + getUserDisplayName(riderOwn) + "\", \"image\": \"" + 
 		        		                             getUserImage(riderOwn) + "\"}");
-		       
+		        
 	            ParsePush push = new ParsePush();
 	            String channel = riderOwnId + "-" + riderChatToId;
 	      	    // For testing
-	            // String channel = riderChatToId + "-" + riderOwnId;
 	      	    // String channel = "m2lsqXmktG" + "-" + riderOwnId;
 	            push.setChannel(channel);
 	            push.setData(chatData);

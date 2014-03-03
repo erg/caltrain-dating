@@ -46,7 +46,7 @@
 	           android:layout_toRightOf="@id/tvChatMessage"
 	           android:textSize="15sp"
 	           android:gravity="center"
-	           android:textColor="#818181"/>
+	           android:textColor="#414141"/>
 
 	       <TextView
 	           android:id="@+id/tvChatTime"

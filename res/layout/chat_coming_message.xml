@@ -51,6 +51,7 @@
 	            android:id="@+id/tvChatName" 
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
+	            android:textColor="#414141"
 	            android:layout_below="@id/ivRiderImage"
 	            android:layout_alignParentLeft="true"
 	            android:layout_toLeftOf="@id/tvChatMessage"
