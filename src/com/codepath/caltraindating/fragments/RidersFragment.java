@@ -27,6 +27,7 @@ public class RidersFragment extends Fragment{
 	ListView lvRiders;
 	RiderListAdapter riderListAdapter;
 	Activity activity;
+	boolean loaded = false;
 	// XXX: Sorry about static!
 	static ArrayList<Checkin> checkins;
 	
@@ -41,7 +42,11 @@ public class RidersFragment extends Fragment{
 		View v = inflater.inflate(R.layout.fragment_riders, container,false);
 		lvRiders = (ListView)v.findViewById(R.id.lvRiders);
 		
-		loadRiders(currentTrain);
+		if(!loaded) {
+			loadRiders(currentTrain);
+		} else {
+			lvRiders.setAdapter(riderListAdapter);
+		}
 		return v;		
 	}
 
@@ -76,6 +81,7 @@ public class RidersFragment extends Fragment{
 //					Log.d("tag","got checkin: "+c.getUser().getString("lastName"));
 //					Log.d("tag","got checkin: "+c.getUser().getString("birthday"));
 				}
+				loaded = true;
 			}
 		});
 	}
