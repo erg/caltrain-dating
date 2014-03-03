@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <eu.erikw.PullToRefreshListView
+    <ListView
         android:id="@+id/lvRiders"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -13,6 +13,6 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true" >
 
-    </eu.erikw.PullToRefreshListView>
+    </ListView>
 
 </RelativeLayout>

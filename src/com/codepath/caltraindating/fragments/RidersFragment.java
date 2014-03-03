@@ -19,15 +19,13 @@ import com.codepath.caltraindating.models.Schedule;
 import com.codepath.caltraindating.models.Train;
 import com.parse.ParseUser;
 
-import eu.erikw.PullToRefreshListView;
-import eu.erikw.PullToRefreshListView.OnRefreshListener;
-
 public class RidersFragment extends Fragment{
 	Train currentTrain = null;
 	Listener listener = null;
-	PullToRefreshListView lvRiders;
+	ListView lvRiders;
 	RiderListAdapter riderListAdapter;
 	Activity activity;
+	boolean loaded = false;
 	// XXX: Sorry about static!
 	static ArrayList<Checkin> checkins;
 	
@@ -40,16 +38,12 @@ public class RidersFragment extends Fragment{
 			Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
 		View v = inflater.inflate(R.layout.fragment_riders, container,false);
-		lvRiders = (PullToRefreshListView)v.findViewById(R.id.lvRiders);
-		loadRiders(currentTrain);
-		lvRiders.setOnRefreshListener(new OnRefreshListener() {
-	          @Override
-	          public void onRefresh() {
-	  	          riderListAdapter.clear();
-	  	          loadRiders(currentTrain);
-  	              lvRiders.onRefreshComplete();
-	          }
-	      });
+		lvRiders = (ListView)v.findViewById(R.id.lvRiders);
+        if(!loaded) {
+            loadRiders(currentTrain);
+        } else {
+            lvRiders.setAdapter(riderListAdapter);
+        }
 		
 		return v;		
 	}
@@ -85,6 +79,7 @@ public class RidersFragment extends Fragment{
 //					Log.d("tag","got checkin: "+c.getUser().getString("lastName"));
 //					Log.d("tag","got checkin: "+c.getUser().getString("birthday"));
 				}
+				loaded = true;
 			}
 		});
 	}
