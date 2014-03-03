@@ -26,7 +26,14 @@
         android:paddingLeft="10dp"
         android:text="32_123"
         android:textAppearance="?android:attr/textAppearanceLarge" />
-
+    
+    <ImageView
+        android:id="@+id/ivChatAttention"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:alpha="255"
+        android:src="@drawable/ic_chat_attention" />
+    
     <Button
         android:id="@+id/btMatch"
         android:layout_width="fill_parent"

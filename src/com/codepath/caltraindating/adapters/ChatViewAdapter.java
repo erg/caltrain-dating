@@ -55,7 +55,6 @@ public class ChatViewAdapter extends BaseAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
     	
     	ChatModel chat = chatList.get(position);
-    	//	Log.d("DEBUG", "time="+chat.getChatTime()+", name="+chat.getChatName()+", messge="+chat.getChatMessage());
     	boolean bComingMessage = chat.isComingMessage();
     		
     	ViewHolder viewHolder = null;	

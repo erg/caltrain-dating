@@ -35,7 +35,7 @@
 		        android:onClick="head_xiaohei"
 		        android:layout_alignParentLeft="true" 
                 android:layout_alignParentTop="true" 
-		        android:background="@drawable/ic_female_default"/>
+		        android:background="@drawable/ic_rider_default"/>
  				
  			<TextView 
 	            android:id="@+id/tvChatMessage" 

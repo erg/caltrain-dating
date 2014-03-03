@@ -26,6 +26,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.codepath.caltraindating.ChatHolder;
+import com.codepath.caltraindating.MainActivity;
 import com.codepath.caltraindating.R;
 import com.codepath.caltraindating.adapters.ChatViewAdapter;
 import com.codepath.caltraindating.models.ChatInParse;
@@ -56,10 +57,17 @@ public class ChatFragment extends Fragment implements OnClickListener {
 
 	// listener is the activity itself
     private OnProfileClickListener profileClickListener;
+    
+    private OnBackClickListener backClickListener;
 
     // Define the events that the fragment will use to communicate
     public interface OnProfileClickListener {
-        public void onProfileButtonClick(ParseUser rider);
+        public void onProfileButtonClick(String riderChatToId);
+    }
+
+    // Define the events that the fragment will use to communicate
+    public interface OnBackClickListener {
+        public void onBackButtonClick();
     }
 
     // Store the listener (activity) that will have events fired once the fragment is attached
@@ -68,18 +76,18 @@ public class ChatFragment extends Fragment implements OnClickListener {
         super.onAttach(activity);
         if (activity instanceof OnProfileClickListener) {
         	profileClickListener = (OnProfileClickListener) activity;
+        	backClickListener = (OnBackClickListener)activity;
         } else {
             throw new ClassCastException(activity.toString()
               + " must implement ChatFragment.OnItemSelectedListener");
         }
     }
 
-    public static ChatFragment newInstance(String ownUserId, String chatToUserId, List<ChatModel> chatList) {
+    public static ChatFragment newInstance(String ownUserId, String chatToUserId) {
     	ChatFragment fragmentChat = new ChatFragment();
         Bundle args = new Bundle();
         args.putString("OwnUserId", ownUserId);
         args.putString("ChatToUserId", chatToUserId);
-        args.putSerializable("ChatList", (ArrayList<ChatModel>)chatList);
         fragmentChat.setArguments(args);
         return fragmentChat;
     }
@@ -112,59 +120,25 @@ public class ChatFragment extends Fragment implements OnClickListener {
  
 	    riderOwnId = getArguments().getString("OwnUserId");
 	    riderChatToId = getArguments().getString("ChatToUserId");
-	    if (getArguments().getSerializable("ChatList")!=null)
-	        chatList = (ArrayList<ChatModel>)getArguments().getSerializable("ChatList");
+        chatList = ChatHolder.getInstance().retrieve(riderChatToId);
+	    if (chatList==null)
+	    	chatList = ChatHolder.getInstance().initialize(riderChatToId);
 	    if (riderOwnId!=null)
 	    	riderOwn = getParseUserById(riderOwnId);
 	    if (riderChatToId!=null)
 	    	riderChatTo = getParseUserById(riderChatToId);
 	    tvChatToTitle.setText(getUserDisplayName(riderChatTo));
+        
 	    adapterChatView = new ChatViewAdapter(getActivity(), chatList);
 		lvChats.setAdapter(adapterChatView);
+		ChatHolder.getInstance().clearMessage(riderChatToId);
        
 		// Do we need to keep the chat history in Parse?
 		// if (chatList.size()==0)
 		//     fillChatListByParseQuery();
 	}
 	
-	/* This part is just for demo
-	 * 
-	private String[] msgArray = new String[]{"Hi", "Hi", "How are you?", "Good", 
-				"Are you on train 214?", "Yes, I am on car 5",
-				"I am on car 6, want a date?", "Sure"};
 
-    private String[] dateArray = new String[]{"2014-02-01 18:00", "2014-02-01 18:10", 
-				"2014-02-01 18:11", "2014-02-01 18:20", 
-				"2014-02-01 18:30", "2014-02-01 18:35", 
-				"2014-02-01 18:40", "2014-02-01 18:50"}; 
-
-    private final static int COUNT = 8;
-
-	public void initData() {
-	    if (chatList==null || chatList.size()==0) {
-	    	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-	    	for (int i = 0; i < COUNT; i++) {
-	    		ChatModel chat = new ChatModel(); 
-	   		    try {
-					chat.setChatTime(getMessageTime(df.parse(dateArray[i])));
-				} 
-	   		    catch (ParseException e) {
-					chat.setChatTime(getMessageTime(new Date()));
-				}
-	    		if (i % 2 == 0) {
-	    			chat.setChatName("Tristan");
-	    			chat.setComingMessage(false);
-	    		} else {
-	    			chat.setChatName("Isolde");
-	    			chat.setComingMessage(true);
-	    		}
-	    		
-	    		chat.setChatMessage(msgArray[i]);
-	    		chatList.add(chat);
-	    	}
-	    }
-*/
-	
 	@SuppressWarnings("unused")
 	private void fillChatListByParseQuery() {
     	ParseQuery<ChatInParse> queryFromOwn = ParseQuery.getQuery(ChatInParse.class);
@@ -223,12 +197,10 @@ public class ChatFragment extends Fragment implements OnClickListener {
 				sendMessage();
 				break;
 			case R.id.btnBack:
-				ChatHolder.getInstance().saveOrUpdate(riderChatToId, chatList);
-				
-				getActivity().finish();
+				backClickListener.onBackButtonClick();
 				break;
 			case R.id.btnRiderProfile:
-			    profileClickListener.onProfileButtonClick(riderChatTo);
+			    profileClickListener.onProfileButtonClick(riderChatToId);
 				break;
 		}
 	}
@@ -245,25 +217,32 @@ public class ChatFragment extends Fragment implements OnClickListener {
 		    chat.setChatMessage(chatMessage);
 		    chat.setChatImage(getUserImage(riderOwn));
 			
-		    chatList.add(chat);
+		    addToChatList(riderChatToId, chat);
+		    
 		    adapterChatView.notifyDataSetChanged();
-			
 		    etMessage.setText("");
 			
 		    try {
+		    	/* This is for testing
 		    	String returnMessage = chatMessage.substring(0, chatMessage.length()-1) + "!";
 		        JSONObject chatData = new JSONObject("{\"action\": \"com.codepath.caltraindating.CHAT\", \"message\": \"" + returnMessage +  
 		    	   	                                 "\", \"name\": \"" + getUserDisplayName(riderChatTo) + "\", \"image\": \"" + getUserImage(riderChatTo) +
 		                                             "\"}");
-		        // Log.d("DEBUG", "json message=" + chatData.toString());
+		        */                          
+		        JSONObject chatData = new JSONObject("{\"action\": \"com.codepath.caltraindating.CHAT\", \"message\": \"" + chatMessage +  
+                                                     "\", \"name\": \"" + getUserDisplayName(riderOwn) + "\", \"image\": \"" + 
+		        		                             getUserImage(riderOwn) + "\"}");
 	            ParsePush push = new ParsePush();
-	            String channel = riderChatToId + "-" + riderOwnId;
+	            String channel = riderOwnId + "-" + riderChatToId;
+	      	    // For testing
+	            // String channel = riderChatToId + "-" + riderOwnId;
+	      	    // String channel = "m2lsqXmktG" + "-" + riderOwnId;
 	            push.setChannel(channel);
 	            push.setData(chatData);
 	            push.sendInBackground();
 	        }
 	        catch (JSONException je) {
-		        Log.d("DEBUG", "send message error: " + je.getMessage());
+		        Log.w("WARN", "send message error: " + je.getMessage());
 	        }
 
 		    // Do we want to save the chat in Parse?
@@ -300,11 +279,11 @@ public class ChatFragment extends Fragment implements OnClickListener {
             	puSet = users.get(0);
             }
             else {
-            	Log.d("DEBUG", "sync done but no result found for id=" + userId);
+            	Log.w("WARN", "sync done but no result found for id=" + userId);
             }
         }
         catch (ParseException pe) {
-	        Log.d("DEBUG", "Parse error message: " + pe.getMessage());
+	        Log.w("WARN", "Parse error message: " + pe.getMessage());
 		};
         return puSet;
 	}
@@ -343,14 +322,19 @@ public class ChatFragment extends Fragment implements OnClickListener {
 		return chatList;
 	}
 
+    
+	public String getRiderChatToId() {
+		return riderChatToId;
+	}
+
 	public void focusOnLatestMessge() {
 	    lvChats.setSelection(lvChats.getCount() - 1);
 	}
 
-	public void addToChatList(ChatModel newchat) {
-    	if (this.chatList==null)
-    		this.chatList = new ArrayList<ChatModel>();
+	public void addToChatList(String chatToId, ChatModel newchat) {
     	this.chatList.add(newchat);
-    	// Log.d("DEBUG", "Let's see what's in the chat list now:" + chatList.toString());
+    	// this.chatList is pointing to ChatHolder.chatList
+    	// ChatHolder.getInstance().addNewChat(chatToId, newchat, false);
     }
+	
 }

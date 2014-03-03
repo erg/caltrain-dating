@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.codepath.caltraindating.R;
+import com.codepath.caltraindating.adapters.ChatViewAdapter;
 import com.codepath.caltraindating.adapters.RiderListAdapter;
 import com.codepath.caltraindating.models.Callback;
 import com.codepath.caltraindating.models.Checkin;
@@ -67,6 +68,10 @@ public class RidersFragment extends Fragment{
 		});
 	}
 
+	public RiderListAdapter getRiderListAdapter() {
+		return riderListAdapter;
+	}
+
 	public Train getCurrentTrain() {
 		return currentTrain;
 	}
@@ -81,5 +86,13 @@ public class RidersFragment extends Fragment{
 
 	public void setListener(Listener listener) {
 		this.listener = listener;
+	}
+	
+	public void setMessageNotice(String msgFromUserId) {
+		for (Checkin c: checkins) {
+			if (c.getUser().getObjectId().equals(msgFromUserId)) {
+				riderListAdapter.notifyDataSetChanged();
+			}
+		}
 	}
 }

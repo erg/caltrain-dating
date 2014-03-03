@@ -53,7 +53,7 @@ public class Schedule {
 			if(s == null){
 				Log.e("tag","stop for train is null");
 			}else{
-				Log.e("tag","stop for train "+s.getStop()+" : "+s.getStationId());
+				// Log.e("tag","stop for train "+s.getStop()+" : "+s.getStationId());
 			}
 		}
 		Stop s = times.get(destination);

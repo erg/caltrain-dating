@@ -15,11 +15,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.codepath.caltraindating.CaltrainUtils;
+import com.codepath.caltraindating.ChatHolder;
 import com.codepath.caltraindating.MainActivity;
 import com.codepath.caltraindating.R;
+import com.codepath.caltraindating.fragments.ChatFragment;
 import com.codepath.caltraindating.fragments.ViewProfileFragment;
+import com.codepath.caltraindating.models.ChatModel;
 import com.codepath.caltraindating.models.Checkin;
 import com.parse.ParseUser;
+import com.parse.PushService;
 import com.squareup.picasso.Picasso;
 
 public class RiderListAdapter extends ArrayAdapter<Checkin> {
@@ -27,12 +31,13 @@ public class RiderListAdapter extends ArrayAdapter<Checkin> {
 	Context context;
 	MainActivity mainActivity;
 	ArrayList<Checkin> checkins;
+	ParseUser targetUser;
 
 	public RiderListAdapter(Context context, Activity activity,
 			ArrayList<Checkin> checkins) {
 		super(context, 0, checkins);
 		this.context = context;
-		this.mainActivity = (MainActivity) activity;
+		this.mainActivity = (MainActivity)activity;
 		this.checkins = checkins;
 	}
 
@@ -46,6 +51,7 @@ public class RiderListAdapter extends ArrayAdapter<Checkin> {
 	public View getView(final int position, View convertView, ViewGroup parent) {
 		// Get the data item for this position
 		ParseUser rider = getItem(position).getUser();
+		String targetUserId = rider.getObjectId();
 		// Check if an existing view is being reused, otherwise inflate the view
 		if (convertView == null) {
 			LayoutInflater inflater = LayoutInflater.from(getContext());
@@ -80,11 +86,30 @@ public class RiderListAdapter extends ArrayAdapter<Checkin> {
 				(String) rider.get("birthday"));
 		tvAge.setText(age);
 
+		ImageView ivChatAttention = (ImageView) convertView.findViewById(R.id.ivChatAttention);
+		if (ChatHolder.getInstance().hasNewMessage(targetUserId))
+			// ivChatAttention.setVisibility(View.VISIBLE);
+		    ivChatAttention.setAlpha(255);
+		else
+		    // ivChatAttention.setVisibility(View.GONE);
+		    ivChatAttention.setAlpha(0);
+		
 		Button btMatch = (Button) convertView.findViewById(R.id.btMatch);
 		btMatch.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Log.d("DEBUG", "match clicked!");
+				targetUser = getItem(position).getUser();
+		        // Get passed riderOwnId and riderChatToId from last activity 
+		        String riderOwnId = mainActivity.getCurrentUserId();
+		        String riderChatToId = targetUser.getObjectId();
+		        String channel = riderChatToId + "-" + riderOwnId;
+		        ArrayList<ChatModel> chatHistory = ChatHolder.getInstance().retrieve(riderChatToId);
+		        if (chatHistory==null) {
+		          	PushService.subscribe(context, channel, mainActivity.getClass());
+		        }
+				
+				ChatFragment chatFragment = ChatFragment.newInstance(riderOwnId, riderChatToId);
+				mainActivity.switchToFragment(chatFragment, "CHAT");
 			}
 		});
 

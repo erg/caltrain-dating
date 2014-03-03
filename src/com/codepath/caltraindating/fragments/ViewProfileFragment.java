@@ -1,12 +1,14 @@
 package com.codepath.caltraindating.fragments;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,8 @@ import com.codepath.caltraindating.CaltrainUtils;
 import com.codepath.caltraindating.R;
 import com.codepath.caltraindating.adapters.SmartFragmentStatePagerAdapter;
 import com.codepath.caltraindating.fragments.LoginFragment.Listener;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 public class ViewProfileFragment extends Fragment {
@@ -43,6 +47,16 @@ public class ViewProfileFragment extends Fragment {
         return myProfileFragment;
 	}
 	
+	public static ViewProfileFragment newInstance(String userId) {
+		ViewProfileFragment myProfileFragment = new ViewProfileFragment();
+        Bundle args = new Bundle();
+        args.putBoolean("isUser", false);
+        args.putInt("position", -1);
+        args.putString("userId",userId);
+        myProfileFragment.setArguments(args);
+        return myProfileFragment;
+	}
+	
 	public ParseUser getMyUser() {
 		if(isUser) {
 			return listener.getUser();
@@ -57,12 +71,16 @@ public class ViewProfileFragment extends Fragment {
 		
 		isUser = getArguments().getBoolean("isUser");
 		position = getArguments().getInt("position");
+		String currentUserId = getArguments().getString("userId");
 		
 		view = inflater.inflate(R.layout.fragment_my_profile, container,
 				false);
 		vpPager = (ViewPager)view.findViewById(R.id.vpImages);
 
-		currentUser = getMyUser();
+		if (currentUserId==null)
+		    currentUser = getMyUser();
+		else
+			currentUser = getParseUserById(currentUserId);
 		
 		tvFirstName = (TextView)view.findViewById(R.id.tvFirstName);
 		tvFirstName.setText((String)currentUser.get("firstName"));
@@ -149,4 +167,22 @@ public class ViewProfileFragment extends Fragment {
 
 	}
 
+	private ParseUser getParseUserById(final String userId) {
+		ParseUser puSet = null;
+        ParseQuery<ParseUser> query = ParseUser.getQuery();
+        query.whereEqualTo("objectId", userId);
+        try {
+            List<ParseUser> users = query.find();
+            if (users!=null && users.size()>0) {
+            	puSet = users.get(0);
+            }
+            else {
+            	Log.d("DEBUG", "sync done but no result found for id=" + userId);
+            }
+        }
+        catch (ParseException pe) {
+	        Log.d("DEBUG", "Parse error message: " + pe.getMessage());
+		};
+        return puSet;
+	}
 }

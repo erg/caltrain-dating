@@ -19,7 +19,7 @@
 	           android:focusable="false" 
 	           android:layout_alignParentRight="true" 
                android:layout_alignParentTop="true" 
-	           android:background="@drawable/ic_male_default"/>
+	           android:background="@drawable/ic_rider_default"/>
  				
  		   <TextView 
 	           android:id="@+id/tvChatMessage" 
