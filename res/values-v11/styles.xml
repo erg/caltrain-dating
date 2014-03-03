@@ -7,5 +7,10 @@
     <style name="AppBaseTheme" parent="android:Theme.Holo.Light">
         <!-- API 11 theme customizations can go here. -->
     </style>
+    
+    <style name="dialogGrey" parent="@android:style/Theme.Holo.Dialog">
+        <item name="android:windowBackground">@color/AppGrey</item>
+        <item name="android:windowIsFloating">true</item>
+    </style>
 
 </resources>
