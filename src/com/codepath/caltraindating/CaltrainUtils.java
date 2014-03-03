@@ -5,6 +5,9 @@ import java.util.Date;
 import java.util.Locale;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.NetworkInfo.State;
 import android.util.Log;
 
 public class CaltrainUtils {
@@ -33,4 +36,26 @@ public class CaltrainUtils {
 			return "Unknown";
 		}
 	}
+
+	public static boolean isNetworkOnline(Context context) {
+		try {
+			ConnectivityManager conMan = (ConnectivityManager) context
+					.getSystemService(Context.CONNECTIVITY_SERVICE);
+			State mobile = conMan.getNetworkInfo(
+					ConnectivityManager.TYPE_MOBILE).getState();
+			State wifi = conMan.getNetworkInfo(ConnectivityManager.TYPE_WIFI)
+					.getState();
+			Log.d("DEBUG", "mobile: " + mobile + ", wifi: " + wifi);
+			if (mobile == NetworkInfo.State.CONNECTED
+					|| mobile == NetworkInfo.State.CONNECTING
+					|| wifi == NetworkInfo.State.CONNECTED
+					|| wifi == NetworkInfo.State.CONNECTING) {
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
 }
