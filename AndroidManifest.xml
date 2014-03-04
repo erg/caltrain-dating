@@ -82,7 +82,9 @@
                 <category android:name="com.codepath.caltraindating" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".ChatReceiver" >
+        <receiver
+            android:name=".ChatReceiver"
+            android:exported="false" >
             <intent-filter>
                 <action android:name="com.codepath.caltraindating.CHAT" />
             </intent-filter>
