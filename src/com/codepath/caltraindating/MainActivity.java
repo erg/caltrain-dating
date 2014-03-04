@@ -53,7 +53,7 @@ public class MainActivity extends FragmentActivity
 	
 	ParseUser currentUser = null;
 	String currentUserId = null;
-    BroadcastReceiver pushReceiver;
+//    BroadcastReceiver pushReceiver;
     
     double longitude;
     double latitude;
@@ -77,6 +77,8 @@ public class MainActivity extends FragmentActivity
 		Schedule.initSchedules(this);
 
         // Set Parse push receiver
+		
+		/*
         IntentFilter intentFilter = new IntentFilter("com.codepath.caltraindating.CHAT");
         pushReceiver = new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
@@ -91,6 +93,8 @@ public class MainActivity extends FragmentActivity
         };
         
         registerReceiver(pushReceiver, intentFilter);
+        
+        */
         
       	ParseAnalytics.trackAppOpened(getIntent());
 
@@ -272,10 +276,10 @@ public class MainActivity extends FragmentActivity
 		
 	}
 
-	@Override
-	protected void onStop() {
-		super.onStop();
-		unregisterReceiver(pushReceiver);
-	}
+//	@Override
+//	protected void onStop() {
+//		super.onStop();
+//		unregisterReceiver(pushReceiver);
+//	}
 	
 }
