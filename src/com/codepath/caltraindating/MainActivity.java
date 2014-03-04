@@ -23,6 +23,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.Window;
+import android.widget.Toast;
 
 import com.codepath.caltraindating.fragments.ChatFragment;
 import com.codepath.caltraindating.fragments.CheckinFragment;
@@ -60,6 +61,7 @@ public class MainActivity extends FragmentActivity
 	ParseUser currentUser = null;
 	String currentUserId = null;
 	
+	Intent retIntent;
     BroadcastReceiver pushReceiver;
 
 
@@ -104,8 +106,12 @@ public class MainActivity extends FragmentActivity
     	        deliverChatMessage(intent, chatFromUserId);
            }
         };
-        registerReceiver(pushReceiver, intentFilter);
-		
+        
+        Intent retIntent = registerReceiver(pushReceiver, intentFilter);
+		if(retIntent == null) {
+			Toast.makeText(getApplicationContext(), "retIntent is null", Toast.LENGTH_SHORT).show();
+		}
+        
       	ParseAnalytics.trackAppOpened(getIntent());
 
         
@@ -271,10 +277,10 @@ public class MainActivity extends FragmentActivity
 
 	@Override
 	protected void onStop() {
-		unregisterReceiver(pushReceiver);
 		super.onStop();
+		if(retIntent != null) {
+			unregisterReceiver(pushReceiver);
+		}
 	}
-	
-	
 	
 }
