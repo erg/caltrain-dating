@@ -23,24 +23,17 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.Window;
-import android.widget.Toast;
 
 import com.codepath.caltraindating.fragments.ChatFragment;
 import com.codepath.caltraindating.fragments.CheckinFragment;
 import com.codepath.caltraindating.fragments.LoginFragment;
 import com.codepath.caltraindating.fragments.RidersFragment;
 import com.codepath.caltraindating.fragments.ViewProfileFragment;
-import com.codepath.caltraindating.models.ChatInParse;
 import com.codepath.caltraindating.models.ChatModel;
 import com.codepath.caltraindating.models.Schedule;
 import com.codepath.caltraindating.models.Train;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.parse.Parse;
 import com.parse.ParseAnalytics;
 import com.parse.ParseFacebookUtils;
-import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 public class MainActivity extends FragmentActivity 
@@ -60,8 +53,6 @@ public class MainActivity extends FragmentActivity
 	
 	ParseUser currentUser = null;
 	String currentUserId = null;
-	
-	Intent retIntent;
     BroadcastReceiver pushReceiver;
     
     double longitude;
@@ -99,10 +90,7 @@ public class MainActivity extends FragmentActivity
            }
         };
         
-        Intent retIntent = registerReceiver(pushReceiver, intentFilter);
-		if(retIntent == null) {
-			Toast.makeText(getApplicationContext(), "retIntent is null", Toast.LENGTH_SHORT).show();
-		}
+        registerReceiver(pushReceiver, intentFilter);
         
       	ParseAnalytics.trackAppOpened(getIntent());
 
@@ -287,9 +275,7 @@ public class MainActivity extends FragmentActivity
 	@Override
 	protected void onStop() {
 		super.onStop();
-		if(retIntent != null) {
-			unregisterReceiver(pushReceiver);
-		}
+		unregisterReceiver(pushReceiver);
 	}
 	
 }

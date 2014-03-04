@@ -1,5 +1,7 @@
 package com.codepath.caltraindating;
-import com.codepath.caltraindating.R;
+import android.app.Application;
+import android.content.Context;
+
 import com.codepath.caltraindating.models.ChatInParse;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -7,9 +9,6 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.parse.Parse;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseObject;
-
-import android.app.Application;
-import android.content.Context;
 
 
 public class CaltrainApplication extends Application {
