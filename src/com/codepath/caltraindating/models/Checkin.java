@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -18,9 +19,11 @@ public class Checkin {
 	int destination;
 	long checkinTime;
 	long checkoutTime;
+	double latitude;
+	double longitude;
 	String train;
 	
-	public Checkin(ParseUser user,String train, int destination, Long checkinTime){
+	public Checkin(ParseUser user,String train, int destination, Long checkinTime, double longitude, double latitude){
 		if(checkinTime == null){
 			checkinTime = System.currentTimeMillis();
 		}
@@ -29,6 +32,8 @@ public class Checkin {
 		this.train = train;
 		this.user = user;
 		this.destination = destination;
+		this.longitude = longitude;
+		this.latitude = latitude;
 	}
 	
 	public Checkin(ParseObject p){
@@ -37,6 +42,14 @@ public class Checkin {
 		checkinTime = p.getLong("checkinTime");
 		checkoutTime = p.getLong("checkoutTime");
 		train = p.getString("train");
+		if (p.getParseGeoPoint("location")!=null) {
+		    latitude = p.getParseGeoPoint("location").getLatitude();
+		    longitude = p.getParseGeoPoint("location").getLongitude();
+		}
+		else {
+			latitude = 0.0d;
+			longitude = 0.0d;
+		}
 	}
 	
 	public void save(){
@@ -46,6 +59,8 @@ public class Checkin {
 		checkin.put("checkinTime",checkinTime);
 		checkin.put("checkoutTime",checkoutTime);
 		checkin.put("train",train);
+		ParseGeoPoint location = new ParseGeoPoint(latitude, longitude);
+		checkin.put("location", location);
 		checkin.saveInBackground();
 	}
 	
@@ -79,6 +94,7 @@ public class Checkin {
 
 		});
 	}
+
 
 	public ParseUser getUser() {
 		return user;
@@ -119,4 +135,22 @@ public class Checkin {
 	public void setTrain(String train) {
 		this.train = train;
 	}
+
+	public double getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
+	}
+
+	public double getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(double longitude) {
+		this.longitude = longitude;
+	}
+	
+	
 }

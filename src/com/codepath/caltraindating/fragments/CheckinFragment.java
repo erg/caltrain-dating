@@ -5,6 +5,8 @@ import java.util.Date;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -24,6 +26,7 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.codepath.caltraindating.MainActivity;
 import com.codepath.caltraindating.R;
 import com.codepath.caltraindating.TrainDialog;
 import com.codepath.caltraindating.adapters.StopAdapter;
@@ -52,9 +55,18 @@ public class CheckinFragment extends Fragment implements OnClickListener, TrainD
 	RelativeLayout stationCheckin;
 	TextView tvCheckinStop;
 	
+	protected LocationManager locationManager;
+	
 	public interface Listener{
 		ParseUser getUser();
 		void checkedIn(Train train);
+	}
+
+	
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 	}
 
 	@Override
@@ -188,10 +200,35 @@ public class CheckinFragment extends Fragment implements OnClickListener, TrainD
 	
 	private void checkIn(){
 		Date now = Schedule.getNow();
+		double longitude = 0.0d;
+		double latitude = 0.0d;
 		currentTrain.setLastSelected(now);
 		currentTrain.save();
-		Checkin c = new Checkin(listener.getUser(), currentTrain.getId(), currentTrain.getUsualStop(), now.getTime());
+		Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+		if (location != null) {
+		    longitude = location.getLongitude();	
+		    latitude = location.getLatitude();
+		}
+		else {
+			String currentUserId = listener.getUser().getObjectId();
+			if (currentUserId.equals("nEcX6PawED")) {
+			    latitude = 37.787970d;
+			    longitude = -122.399536d;
+			}
+			else if (currentUserId.equals("S0P8makZSA")) {
+				latitude = 37.789148d;
+				longitude = -122.401326d;
+			}
+			else if (currentUserId.equals("oeHLX39OwU")) {
+				latitude = 37.788219d;
+				longitude = -122.399996d;
+			}
+		}
+		Checkin c = new Checkin(listener.getUser(), currentTrain.getId(), currentTrain.getUsualStop(), now.getTime(), longitude, latitude);
 		c.save();
+		MainActivity mainActivity = (MainActivity)getActivity();
+		mainActivity.setLatitude(latitude);
+		mainActivity.setLongitude(longitude);
 		listener.checkedIn(currentTrain);
 	}
 	

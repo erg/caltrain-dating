@@ -94,6 +94,21 @@ public class RiderListAdapter extends ArrayAdapter<Checkin> {
 		    // ivChatAttention.setVisibility(View.GONE);
 		    ivChatAttention.setAlpha(0);
 		
+		double riderLongitude = getItem(position).getLongitude();
+		double riderLatitude = getItem(position).getLatitude();
+		int carsBetween = distCars(mainActivity.getLatitude(), mainActivity.getLongitude(), riderLatitude, riderLongitude);
+		TextView tvDist = (TextView) convertView.findViewById(R.id.tvDist);
+		if (carsBetween != 0) {
+			if (carsBetween==1)
+				tvDist.setText(" prob. in the same car");
+			else if (carsBetween==2)
+				tvDist.setText(" prob. 1 car away");
+			else
+				tvDist.setText(" prob. " + (carsBetween-1) + " cars away");
+		}
+		else
+			tvDist.setText(" can't detect dist.");
+			
 		Button btMatch = (Button) convertView.findViewById(R.id.btMatch);
 		btMatch.setOnClickListener(new OnClickListener() {
 			@Override
@@ -115,4 +130,25 @@ public class RiderListAdapter extends ArrayAdapter<Checkin> {
 
 		return convertView;
 	}
+	
+	protected int distCars(double lat1, double lng1, double lat2, double lng2) {
+		if ((lat1==0.0f && lng1==0.0f) || (lat2==0.0f && lng2==0.0f))
+			return 0;
+	    double earthRadius = 3958.75;
+	    double dLat = Math.toRadians(lat2-lat1);
+	    double dLng = Math.toRadians(lng2-lng1);
+	    double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+	               Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+	               Math.sin(dLng/2) * Math.sin(dLng/2);
+	    double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+	    double dist = earthRadius * c;
+
+	    int meterConversion = 1609;
+
+	    float distance = (float) (dist * meterConversion);
+	    Log.d("DEBUG", "distance=" + distance);
+	    
+	    return (int) (distance / 15.0f) + 1;
+	}
+	
 }

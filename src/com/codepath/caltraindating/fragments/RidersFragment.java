@@ -19,10 +19,13 @@ import com.codepath.caltraindating.models.Schedule;
 import com.codepath.caltraindating.models.Train;
 import com.parse.ParseUser;
 
+import eu.erikw.PullToRefreshListView;
+import eu.erikw.PullToRefreshListView.OnRefreshListener;
+
 public class RidersFragment extends Fragment{
 	Train currentTrain = null;
 	Listener listener = null;
-	ListView lvRiders;
+	PullToRefreshListView lvRiders;
 	RiderListAdapter riderListAdapter;
 	Activity activity;
 	boolean loaded = false;
@@ -38,13 +41,21 @@ public class RidersFragment extends Fragment{
 			Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
 		View v = inflater.inflate(R.layout.fragment_riders, container,false);
-		lvRiders = (ListView)v.findViewById(R.id.lvRiders);
+		lvRiders = (PullToRefreshListView)v.findViewById(R.id.lvRiders);
         if(!loaded) {
             loadRiders(currentTrain);
         } else {
             lvRiders.setAdapter(riderListAdapter);
         }
-		
+        // Set a listener to be invoked when the list should be refreshed.
+        lvRiders.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+            	riderListAdapter.clear();
+            	loadRiders(currentTrain);
+            	lvRiders.onRefreshComplete();
+            }
+        });		
 		return v;		
 	}
 
@@ -83,6 +94,7 @@ public class RidersFragment extends Fragment{
 			}
 		});
 	}
+
 
 	public RiderListAdapter getRiderListAdapter() {
 		return riderListAdapter;

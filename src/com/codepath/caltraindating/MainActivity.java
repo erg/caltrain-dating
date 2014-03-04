@@ -63,6 +63,9 @@ public class MainActivity extends FragmentActivity
 	
 	Intent retIntent;
     BroadcastReceiver pushReceiver;
+    
+    double longitude;
+    double latitude;
 
 
 	@Override
@@ -71,9 +74,6 @@ public class MainActivity extends FragmentActivity
 	    requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.activity_main);
 
-		Parse.initialize(this, getResources().getString(R.string.parseId), getResources().getString(R.string.parseKey));
-	    ParseObject.registerSubclass(ChatInParse.class);
-		ParseFacebookUtils.initialize(getResources().getString(R.string.app_id));
 		loginFragment = new LoginFragment();
 		loginFragment.setListener(this);
 		myProfileFragment = new ViewProfileFragment();
@@ -85,14 +85,6 @@ public class MainActivity extends FragmentActivity
 		
 		Schedule.initSchedules(this);
 
-        // Create global configuration and initialize ImageLoader with this configuration
-        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder().
-        		cacheInMemory().cacheOnDisc().build();
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
-            .defaultDisplayImageOptions(defaultOptions)
-            .build();
-        ImageLoader.getInstance().init(config);
-        
         // Set Parse push receiver
         IntentFilter intentFilter = new IntentFilter("com.codepath.caltraindating.CHAT");
         pushReceiver = new BroadcastReceiver() {
@@ -230,7 +222,24 @@ public class MainActivity extends FragmentActivity
 	public String getCurrentUserId() {
 		return currentUserId;
 	}
+
 	
+	public double getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(double longitude) {
+		this.longitude = longitude;
+	}
+
+	public double getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
+	}
+
 	private String getCurrentMessageTime() {
 		SimpleDateFormat sdf = new SimpleDateFormat("h:mm a");
 		return sdf.format(new Date());
