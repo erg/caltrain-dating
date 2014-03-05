@@ -50,7 +50,7 @@
             android:paddingRight="20dp"
             android:maxLines="100"
             android:scrollbars="vertical"
-            android:text="I commute because I like trains. What&apos;s your favorite kind of train? Maybe we have something in common! Do you think Caltrains should be steam engines? Those are much cooler than diesel."
+            android:text="Blurb."
             android:textAppearance="?android:attr/textAppearanceLarge" />
     </RelativeLayout>
 
