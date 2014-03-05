@@ -16,15 +16,18 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.Window;
 import android.widget.Toast;
 
+import com.codepath.caltraindating.fragments.BlurbFragment;
 import com.codepath.caltraindating.fragments.ChatFragment;
 import com.codepath.caltraindating.fragments.CheckinFragment;
 import com.codepath.caltraindating.fragments.LoginFragment;
@@ -39,23 +42,26 @@ import com.parse.ParseUser;
 
 public class MainActivity extends FragmentActivity 
                           implements CheckinFragment.Listener, RidersFragment.Listener, LoginFragment.Listener, 
-                                     ChatFragment.OnProfileClickListener, ChatFragment.OnBackClickListener {
+                                     ChatFragment.OnProfileClickListener, ChatFragment.OnBackClickListener,
+                                     BlurbFragment.Listener {
 	
 	public final static String LOGIN_FRAGMENT_TAG = "LOGIN";
 	public final static String CHECKIN_FRAGMENT_TAG = "CHECKIN";
 	public final static String RIDERS_FRAGMENT_TAG = "RIDERS";
 	public final static String CHAT_FRAGMENT_TAG = "CHAT";
 	public final static String PROFILE_FRAGMENT_TAG = "PROFILE";
+	public final static String BLURB_FRAGMENT_TAG = "BLURB";
 	
 	LoginFragment loginFragment;
 	ViewProfileFragment myProfileFragment;
 	CheckinFragment checkinFragment;
 	RidersFragment ridersFragment;
+	BlurbFragment blurbFragment;
 	
 	ParseUser currentUser = null;
 	String currentUserId = null;
     BroadcastReceiver pushReceiver;
-    
+        
     double longitude;
     double latitude;
 
@@ -90,13 +96,19 @@ public class MainActivity extends FragmentActivity
 
 		loginFragment = new LoginFragment();
 		loginFragment.setListener(this);
+		
 		myProfileFragment = new ViewProfileFragment();
 		myProfileFragment.setListener(this);
+		
 		checkinFragment = new CheckinFragment();
 		checkinFragment.setListener(this);
+		
 		ridersFragment = new RidersFragment();
 		ridersFragment.setListener(this);
 		
+		blurbFragment = new BlurbFragment();
+		blurbFragment.setListener(this);
+
 		Schedule.initSchedules(this);
 
 		ParseAnalytics.trackAppOpened(getIntent());
@@ -149,6 +161,13 @@ public class MainActivity extends FragmentActivity
 		transaction.replace(R.id.fragment_container, newFrag, fragTag);
 		transaction.commitAllowingStateLoss();
     }
+	
+	public void switchToRiders() {
+		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();       
+		//transaction.setCustomAnimations(R.anim.fadein, R.anim.fadein);
+		transaction.replace(R.id.fragment_container, this.ridersFragment, RIDERS_FRAGMENT_TAG);
+		transaction.commitAllowingStateLoss();
+	}
 	
 	// XXX: Do this instead?
 	// http://stackoverflow.com/questions/7992216/android-fragment-handle-back-button-press
@@ -297,6 +316,16 @@ public class MainActivity extends FragmentActivity
         }
 		
 	}
+
+	public void onEditBlurb(MenuItem item) {
+		switchToFragment(blurbFragment, BLURB_FRAGMENT_TAG);
+	}
+
+	@Override
+	public void saveBlurb(String blurb) {
+		Log.d("DEBUG", "Saving blurb: " + blurb);
+	}
+	
 	// Must register here according to:
 	// http://stackoverflow.com/questions/7887169/android-when-to-register-unregister-broadcast-receivers-created-in-an-activity
 	@Override

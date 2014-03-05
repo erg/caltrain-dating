@@ -79,7 +79,6 @@ public class RidersFragment extends Fragment implements OnClickListener{
 		return v;		
 	}
 
-
     public void showProgressBar() {
 	    getActivity().setProgressBarIndeterminateVisibility(true);
 	}
@@ -189,6 +188,12 @@ public class RidersFragment extends Fragment implements OnClickListener{
 	            })
 	            .build();
 	    requestsDialog.show();
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		activity.getActionBar().show();
 	}
 
 
