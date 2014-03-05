@@ -76,11 +76,17 @@ public class Checkin {
 		        if (e == null) {
 		        	// XXX: Can't ask for unique users
 		        	// so if they check in several times, we get them several times...
-		        	HashSet<String> seen = new HashSet<String>();;
+		        	HashSet<String> seen = new HashSet<String>();
 		        	ArrayList<Checkin> ret = new ArrayList<Checkin>();
 		        	for (ParseObject p: checkins){
 		        		Checkin checkin = new Checkin(p);
-		        		String objId = checkin.getUser().getObjectId();
+		        		ParseUser user = checkin.getUser();
+		        		// XXX: Why is user null here? It can happen with new accounts
+		        		if(user == null) {
+		        			Log.e("ERROR", "********user is null, why??");
+		        			continue;
+		        		}
+		        		String objId = user.getObjectId();
 		        		if(!seen.contains(objId)) {
 		        			seen.add(objId);
 		        			ret.add(new Checkin(p));
