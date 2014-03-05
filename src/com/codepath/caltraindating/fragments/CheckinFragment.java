@@ -3,6 +3,9 @@ package com.codepath.caltraindating.fragments;
 import java.util.ArrayList;
 import java.util.Date;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;
@@ -36,6 +39,7 @@ import com.codepath.caltraindating.models.Checkin;
 import com.codepath.caltraindating.models.Schedule;
 import com.codepath.caltraindating.models.Stop;
 import com.codepath.caltraindating.models.Train;
+import com.parse.ParsePush;
 import com.parse.ParseUser;
 
 public class CheckinFragment extends Fragment implements OnClickListener, TrainDialog.Listener{
@@ -204,13 +208,13 @@ public class CheckinFragment extends Fragment implements OnClickListener, TrainD
 		double latitude = 0.0d;
 		currentTrain.setLastSelected(now);
 		currentTrain.save();
+		String currentUserId = listener.getUser().getObjectId();
 		Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 		if (location != null) {
 		    longitude = location.getLongitude();	
 		    latitude = location.getLatitude();
 		}
 		else {
-			String currentUserId = listener.getUser().getObjectId();
 			if (currentUserId.equals("nEcX6PawED")) {
 			    latitude = 37.787970d;
 			    longitude = -122.399536d;
@@ -230,6 +234,18 @@ public class CheckinFragment extends Fragment implements OnClickListener, TrainD
 		mainActivity.setLatitude(latitude);
 		mainActivity.setLongitude(longitude);
 		listener.checkedIn(currentTrain);
+	    try {
+	        JSONObject chatData = new JSONObject("{\"action\": \"com.codepath.caltraindating.CHAT\", \"message\": \"checkin\", \"user\": \"" + currentUserId + "\"}");
+	        
+            ParsePush push = new ParsePush();
+            String channel = "CHECK-IN";
+            push.setChannel(channel);
+            push.setData(chatData);
+            push.sendInBackground();
+        }
+        catch (JSONException je) {
+	        Log.w("WARN", "send message error: " + je.getMessage());
+        }
 	}
 	
 	private void initRecentTrains(){

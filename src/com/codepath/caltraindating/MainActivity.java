@@ -66,10 +66,15 @@ public class MainActivity extends FragmentActivity
       	        String action = intent.getAction();
     	        String channel = intent.getExtras().getString("com.parse.Channel");
 	            // Log.d("DEBUG", "got push action " + action + " on channel " + channel);
-      	        // From channel, get the user id who sends the message
-    	        String[] chatPartners = channel.split("-");
-    	        String chatFromUserId = chatPartners[0];
-    	        deliverChatMessage(intent, chatFromUserId);
+    	        if (channel.equals("CHECK-IN")) {
+    	        	CheckInNotice(intent);
+    	        }
+    	        else {
+      	            // From channel, get the user id who sends the message
+    	            String[] chatPartners = channel.split("-");
+    	            String chatFromUserId = chatPartners[0];
+    	            deliverChatMessage(intent, chatFromUserId);
+    	        }
            }
         };
         
@@ -272,12 +277,33 @@ public class MainActivity extends FragmentActivity
 		
 	}
 	
+	public void CheckInNotice(Intent i) {
+        try {
+            JSONObject json = new JSONObject(i.getExtras().getString("com.parse.Data"));
+
+            String userId = json.getString("user");
+            if (userId.equals(currentUserId)) {
+            	Log.d("DEBUG", "SELF CHECKIN");
+            	return;
+            }
+            Log.d("DEBUG", "New user just check in: " + userId);
+    		RidersFragment fRiders = (RidersFragment)getSupportFragmentManager().findFragmentByTag(RIDERS_FRAGMENT_TAG);
+    		if (fRiders!=null &&fRiders.isVisible()) {
+    			fRiders.loadRiders(fRiders.getCurrentTrain());
+    			fRiders.getRiderListAdapter().notifyDataSetChanged();
+    		}
+        }
+        catch (JSONException je) {
+        	Log.w("WARN", "Parse push data error, mostly due to JSON object: " + je.getMessage());
+        }
+		
+	}
 	// Must register here according to:
 	// http://stackoverflow.com/questions/7887169/android-when-to-register-unregister-broadcast-receivers-created-in-an-activity
 	@Override
 	protected void onResume() {
 		registerReceivers();
-		super.onPause();
+		super.onResume();
 	}
 
 	@Override
