@@ -58,6 +58,23 @@ public class MainActivity extends FragmentActivity
     double longitude;
     double latitude;
 
+    // XXX: Does this fix it? Also, how slow is making new ones each time vs saving it in the class?
+    private void registerReceivers() {
+        IntentFilter intentFilter = new IntentFilter("com.codepath.caltraindating.CHAT");
+        pushReceiver = new BroadcastReceiver() {
+            public void onReceive(Context context, Intent intent) {
+      	        String action = intent.getAction();
+    	        String channel = intent.getExtras().getString("com.parse.Channel");
+	            // Log.d("DEBUG", "got push action " + action + " on channel " + channel);
+      	        // From channel, get the user id who sends the message
+    	        String[] chatPartners = channel.split("-");
+    	        String chatFromUserId = chatPartners[0];
+    	        deliverChatMessage(intent, chatFromUserId);
+           }
+        };
+        
+        registerReceiver(pushReceiver, intentFilter);
+    }
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -77,24 +94,9 @@ public class MainActivity extends FragmentActivity
 		Schedule.initSchedules(this);
 
         // Set Parse push receiver
-        IntentFilter intentFilter = new IntentFilter("com.codepath.caltraindating.CHAT");
-        pushReceiver = new BroadcastReceiver() {
-            public void onReceive(Context context, Intent intent) {
-      	        String action = intent.getAction();
-    	        String channel = intent.getExtras().getString("com.parse.Channel");
-	            // Log.d("DEBUG", "got push action " + action + " on channel " + channel);
-      	        // From channel, get the user id who sends the message
-    	        String[] chatPartners = channel.split("-");
-    	        String chatFromUserId = chatPartners[0];
-    	        deliverChatMessage(intent, chatFromUserId);
-           }
-        };
-        
-        registerReceiver(pushReceiver, intentFilter);
-        
+		registerReceivers();
       	ParseAnalytics.trackAppOpened(getIntent());
 
-        
 		//helpful for finding your hashkey, keep here
 		try {
 		    PackageInfo info = getPackageManager().getPackageInfo(
@@ -271,11 +273,17 @@ public class MainActivity extends FragmentActivity
         }
 		
 	}
+	
+	@Override
+	protected void onResume() {
+		registerReceivers();
+		super.onPause();
+	}
 
 	@Override
-	protected void onStop() {
-		super.onStop();
+	protected void onPause() {
 		unregisterReceiver(pushReceiver);
+		super.onPause();
 	}
 	
 }
