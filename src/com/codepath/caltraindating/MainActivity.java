@@ -93,9 +93,7 @@ public class MainActivity extends FragmentActivity
 		
 		Schedule.initSchedules(this);
 
-        // Set Parse push receiver
-		registerReceivers();
-      	ParseAnalytics.trackAppOpened(getIntent());
+		ParseAnalytics.trackAppOpened(getIntent());
 
 		//helpful for finding your hashkey, keep here
 		try {
@@ -274,6 +272,8 @@ public class MainActivity extends FragmentActivity
 		
 	}
 	
+	// Must register here according to:
+	// http://stackoverflow.com/questions/7887169/android-when-to-register-unregister-broadcast-receivers-created-in-an-activity
 	@Override
 	protected void onResume() {
 		registerReceivers();
