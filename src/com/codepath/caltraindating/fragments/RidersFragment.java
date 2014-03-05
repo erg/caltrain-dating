@@ -93,7 +93,7 @@ public class RidersFragment extends Fragment implements OnClickListener{
         this.activity = activity;
     }
 
-	private void loadRiders(Train t){
+	public void loadRiders(Train t){
 		showProgressBar();
 		Checkin.getCheckins(listener.getUser(), currentTrain, Schedule.getNow(), new Callback<ArrayList<Checkin>>(){
 			@Override
@@ -181,6 +181,12 @@ public class RidersFragment extends Fragment implements OnClickListener{
 	            })
 	            .build();
 	    requestsDialog.show();
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		activity.getActionBar().show();
 	}
 
 
