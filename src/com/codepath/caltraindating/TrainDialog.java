@@ -24,7 +24,7 @@ import com.codepath.caltraindating.models.Stop;
 
 public class TrainDialog extends DialogFragment implements OnClickListener {
 
-	final Long timeWindow = (long) 3600000 / 2;
+	final Long timeWindow = (long) 3600000;
 	Listener listener = null;
 	Button done;
 	Stop selected = null;
