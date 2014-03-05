@@ -1,19 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    
     android:orientation="vertical" >
+    
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:visibility="visible"
+        android:id="@+id/rlRiders"
+        
+        android:layout_alignParentTop="true" >
 
     <eu.erikw.PullToRefreshListView
         android:id="@+id/lvRiders"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
         style="@style/bgGrey"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true" >
 
     </eu.erikw.PullToRefreshListView>
 
+    
+
+    
+
 </RelativeLayout>
+
+<RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:id="@+id/rlInvite"
+        android:visibility="gone"
+        style="@style/bgGrey"
+        android:layout_alignParentTop="true" >
+
+        <Button
+            android:id="@+id/btInvite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/fb_button"
+            android:text="Invite Friends"
+            android:textColor="#EEEEEE"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_above="@+id/btInvite"
+            android:layout_centerHorizontal="true"
+            style="@style/baseText"
+            android:textSize="18sp"
+            android:layout_marginBottom="30dp"
+            android:text="Oh no! No one is here right now... perhaps you should invite your friends." />
+
+    </RelativeLayout>
+    </RelativeLayout>

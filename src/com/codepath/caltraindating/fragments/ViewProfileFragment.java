@@ -3,6 +3,7 @@ package com.codepath.caltraindating.fragments;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import com.codepath.caltraindating.CaltrainUtils;
@@ -98,9 +100,17 @@ public class ViewProfileFragment extends Fragment {
 				savedInstanceState, currentUser);
 
         vpPager.setAdapter(adapterViewPager);
+
 		return view;
 	}
 	
+	// Hide keyboard on viewing profile
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+	    super.onActivityCreated(savedInstanceState);
+	    final InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+	    imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
+	}
 
 	// Like, what if they are in the app and have a birthday? Recalculate. 
 	@Override

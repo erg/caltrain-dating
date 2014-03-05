@@ -100,13 +100,18 @@ public class RiderListAdapter extends ArrayAdapter<Checkin> {
 		TextView tvDist = (TextView) convertView.findViewById(R.id.tvDist);
 		if (carsBetween != 0) {
 			if (carsBetween==1)
-				tvDist.setText(" prob. in the same car");
+				tvDist.setText(" likely in the same car");
 			else if (carsBetween==2)
-				tvDist.setText(" prob. 1 car away");
+				tvDist.setText(" likely 1 car away");
 			else if (carsBetween > 10)
-				tvDist.setText(" prob. not on the same train");
-			else
-				tvDist.setText(" prob. " + (carsBetween-1) + " cars away");
+				tvDist.setText(" likely not on train");
+			else {
+				// Caltrains are like 6 cars only, shouldn't say 10 cars
+				int carsAway = carsBetween - 1;
+				if(carsAway > 5)
+					carsAway = 5;
+				tvDist.setText(" likely " + carsAway + " cars away");
+			}
 		}
 		else
 			tvDist.setText("");
