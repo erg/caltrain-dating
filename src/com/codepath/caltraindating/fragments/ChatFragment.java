@@ -137,16 +137,17 @@ public class ChatFragment extends Fragment implements OnClickListener {
 		lvChats.setAdapter(adapterChatView);
 		ChatHolder.getInstance().clearMessage(riderChatToId);
        
+		/*
 		etMessage.setOnKeyListener(new OnKeyListener() {
 		    public boolean onKey(View view, int keyCode, KeyEvent keyevent) {
 		        //If the keyevent is a key-down event on the "enter" button
 		        if ((keyevent.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
 		        	sendMessage();
-                    return true;
 		        }
 		        return false;
 		    }
 		});
+		*/
 		// Do we need to keep the chat history in Parse?
 		// if (chatList.size()==0)
 		//     fillChatListByParseQuery();
