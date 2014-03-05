@@ -73,7 +73,7 @@ public class RiderListAdapter extends ArrayAdapter<Checkin> {
 		});
 
 		ArrayList<String> thumbnails = (ArrayList<String>) rider.get("imgSrcs");
-		if (thumbnails.size() > 0) {
+		if (thumbnails != null && thumbnails.size() > 0) {
 			String url = thumbnails.get(0);
 			Picasso.with(getContext()).load(url).into(ivProfileThumbnail);
 		}

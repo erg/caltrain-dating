@@ -10,6 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
+        style="@style/bgGrey"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true" >
 
