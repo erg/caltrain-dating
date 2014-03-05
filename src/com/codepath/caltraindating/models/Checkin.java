@@ -83,7 +83,7 @@ public class Checkin {
 		        		ParseUser user = checkin.getUser();
 		        		// XXX: Why is user null here? It can happen with new accounts
 		        		if(user == null) {
-		        			Log.e("ERROR", "********user is null, why??");
+		        			Log.e("ERROR", "for checkin " + p.getObjectId() + ", user is null, why??");
 		        			continue;
 		        		}
 		        		String objId = user.getObjectId();

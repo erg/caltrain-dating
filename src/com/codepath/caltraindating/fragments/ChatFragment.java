@@ -291,6 +291,10 @@ public class ChatFragment extends Fragment implements OnClickListener {
 	}
 	
 	private String getUserDisplayName(ParseUser user) {
+		if(user == null) {
+			Log.e("ERROR", "in ChatFragment, user is null");
+			return "";
+		}
 	    StringBuffer displayName = new StringBuffer();
 	    String firstName = user.getString("firstName");
 	    if (firstName!=null && firstName.length()>0) {
