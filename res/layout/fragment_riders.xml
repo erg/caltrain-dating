@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
-        android:visibility="gone"
+        android:visibility="visible"
         android:id="@+id/rlRiders"
         
         android:layout_alignParentTop="true" >
@@ -39,7 +39,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:id="@+id/rlInvite"
-        android:visibility="visible"
+        android:visibility="gone"
         style="@style/bgGrey"
         android:layout_alignParentTop="true" >
 
