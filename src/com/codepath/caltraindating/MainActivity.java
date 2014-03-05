@@ -277,7 +277,7 @@ public class MainActivity extends FragmentActivity
 	@Override
 	protected void onResume() {
 		registerReceivers();
-		super.onPause();
+		super.onResume();
 	}
 
 	@Override
