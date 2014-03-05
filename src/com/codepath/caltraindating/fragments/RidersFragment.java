@@ -13,9 +13,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 
+import com.codepath.caltraindating.ChatHolder;
 import com.codepath.caltraindating.R;
 import com.codepath.caltraindating.adapters.RiderListAdapter;
 import com.codepath.caltraindating.models.Callback;
+import com.codepath.caltraindating.models.ChatInParse;
 import com.codepath.caltraindating.models.Checkin;
 import com.codepath.caltraindating.models.Schedule;
 import com.codepath.caltraindating.models.Train;
@@ -23,6 +25,9 @@ import com.facebook.FacebookException;
 import com.facebook.Session;
 import com.facebook.widget.WebDialog;
 import com.facebook.widget.WebDialog.OnCompleteListener;
+import com.parse.CountCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import eu.erikw.PullToRefreshListView;
@@ -98,6 +103,21 @@ public class RidersFragment extends Fragment implements OnClickListener{
 		        lvRiders.setAdapter(riderListAdapter);
 				hideProgressBar();
 				for(Checkin c: checkins){
+					final String targetUserId = c.getUser().getObjectId();
+			    	ParseQuery<ChatInParse> queryNewMessage = ParseQuery.getQuery(ChatInParse.class);
+			    	queryNewMessage.whereEqualTo("riderChatFrom", c.getUser());
+			    	queryNewMessage.whereEqualTo("riderChatTo", listener.getUser());
+			    	queryNewMessage.whereEqualTo("isRead", false);
+			    	queryNewMessage.countInBackground(new CountCallback() {
+			   		    public void done(int count, ParseException e) {
+			    		    if (e == null) {
+			    		        if (count>0) {
+			    		        	ChatHolder.getInstance().setNewMessage(targetUserId);
+			    			    	riderListAdapter.notifyDataSetChanged();
+			    		        }
+			    		    }
+			    		}
+			        });
 					Log.d("tag","got checkin: "+c.getUser().getObjectId());
 //					Log.d("tag","got checkin: "+c.getUser().getString("firstName"));
 //					Log.d("tag","got checkin: "+c.getUser().getString("lastName"));

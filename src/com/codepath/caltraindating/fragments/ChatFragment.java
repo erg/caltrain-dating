@@ -18,7 +18,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -31,7 +30,9 @@ import com.codepath.caltraindating.adapters.ChatViewAdapter;
 import com.codepath.caltraindating.models.ChatInParse;
 import com.codepath.caltraindating.models.ChatModel;
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -52,7 +53,15 @@ public class ChatFragment extends Fragment implements OnClickListener {
 	private ParseUser riderOwn;
 	private ParseUser riderChatTo;
 
-	private static SimpleDateFormat sdf = new SimpleDateFormat("h:mm a");
+	private static SimpleDateFormat sdf1 = new SimpleDateFormat("h:mm a");
+	private static SimpleDateFormat sdf2 = new SimpleDateFormat("EEE h:mm a");
+	private static SimpleDateFormat sdf3 = new SimpleDateFormat("MMM d h:mm a");
+	private static SimpleDateFormat sdf4 = new SimpleDateFormat("MMM d, yyyy h:mm a");
+
+	int currentYear;
+	int currentMonth;
+	int currentWeek;
+	int currentDay;
 
 	// listener is the activity itself
     private OnProfileClickListener profileClickListener;
@@ -132,7 +141,13 @@ public class ChatFragment extends Fragment implements OnClickListener {
 	    adapterChatView = new ChatViewAdapter(getActivity(), chatList);
 		lvChats.setAdapter(adapterChatView);
 		ChatHolder.getInstance().clearMessage(riderChatToId);
-       
+    	Calendar c=Calendar.getInstance();
+    	
+    	currentYear=c.get(c.YEAR);
+    	currentMonth=c.get(c.MONTH);
+    	currentWeek=c.get(c.WEEK_OF_YEAR);
+    	currentDay = c.get(c.DAY_OF_WEEK);
+     
 		/*
 		etMessage.setOnKeyListener(new OnKeyListener() {
 		    public boolean onKey(View view, int keyCode, KeyEvent keyevent) {
@@ -191,8 +206,7 @@ public class ChatFragment extends Fragment implements OnClickListener {
     		    		}
     		    		chat.setChatMessage(cip.getChatMessage());
     		    		if (!cip.isRead()) {
-    		    			cip.setRead(true);
-    		    			cip.saveInBackground();
+    		    			updateChatRead(cip.getObjectId());
     		    		}
     		    		chatList.add(chat);
     		    		adapterChatView.notifyDataSetChanged();
@@ -268,7 +282,22 @@ public class ChatFragment extends Fragment implements OnClickListener {
 
 		}
 	}
-		
+
+	private void updateChatRead(String chatId) {
+		ParseQuery<ParseObject> query = ParseQuery.getQuery("Chat");
+		 
+		// Retrieve the object by id
+		query.getInBackground(chatId, new GetCallback<ParseObject>() {
+		    public void done(ParseObject chat, ParseException e) {
+		        if (e == null) {
+		            // just update the isRead field
+		            chat.put("isRead", true);
+		            chat.saveInBackground();
+		        }
+		    }
+		});	
+	}
+	
 	private String getMessageTime(Date chatTime) {
 	    if (chatTime == null) {
 	        Calendar c = Calendar.getInstance();
@@ -277,12 +306,35 @@ public class ChatFragment extends Fragment implements OnClickListener {
 	        String minute = String.valueOf(c.get(Calendar.MINUTE));
 	        
 	        StringBuffer sbBuffer = new StringBuffer();
-	        sbBuffer.append(hour + ":" + minute); 
+	        sbBuffer.append(hour + ":" + minute);
 	        						
 	        return sbBuffer.toString();
 	    }
 	    else {
-	    	return sdf.format(chatTime);
+
+	    	Calendar c2=Calendar.getInstance();
+	    	c2.setTimeInMillis(chatTime.getTime());
+	    	int chatYear=c2.get(c2.YEAR);
+	    	int chatMonth = c2.get(c2.MONTH);
+	    	int chatWeek = c2.get(c2.WEEK_OF_YEAR);
+	    	int chatDay = c2.get(c2.DAY_OF_WEEK);
+
+	    	if(chatYear == currentYear){
+	    		if (chatMonth == currentMonth) {
+	    	       if(chatWeek == currentWeek) {
+	    	    	   if (chatDay == currentDay)
+	    	    		   return sdf1.format(chatTime);
+	    	    	   else
+	    	    		   return sdf2.format(chatTime);
+	    	       }
+	    	       else
+	    	    	   return sdf3.format(chatTime);
+	    	    }
+	    		else
+	    			return sdf3.format(chatTime);
+	    	}
+	    	else
+	    		return sdf4.format(chatTime);
 	    }
 	}
 	

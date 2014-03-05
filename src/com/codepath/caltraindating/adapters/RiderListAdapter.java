@@ -20,8 +20,12 @@ import com.codepath.caltraindating.MainActivity;
 import com.codepath.caltraindating.R;
 import com.codepath.caltraindating.fragments.ChatFragment;
 import com.codepath.caltraindating.fragments.ViewProfileFragment;
+import com.codepath.caltraindating.models.ChatInParse;
 import com.codepath.caltraindating.models.ChatModel;
 import com.codepath.caltraindating.models.Checkin;
+import com.parse.CountCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.PushService;
 import com.squareup.picasso.Picasso;
@@ -32,6 +36,7 @@ public class RiderListAdapter extends ArrayAdapter<Checkin> {
 	MainActivity mainActivity;
 	ArrayList<Checkin> checkins;
 	ParseUser targetUser;
+	int msgNotification = 0;
 
 	public RiderListAdapter(Context context, Activity activity,
 			ArrayList<Checkin> checkins) {
@@ -52,6 +57,7 @@ public class RiderListAdapter extends ArrayAdapter<Checkin> {
 		// Get the data item for this position
 		ParseUser rider = getItem(position).getUser();
 		String targetUserId = rider.getObjectId();
+		msgNotification = 0;
 		// Check if an existing view is being reused, otherwise inflate the view
 		if (convertView == null) {
 			LayoutInflater inflater = LayoutInflater.from(getContext());
@@ -88,12 +94,11 @@ public class RiderListAdapter extends ArrayAdapter<Checkin> {
 
 		ImageView ivChatAttention = (ImageView) convertView.findViewById(R.id.ivChatAttention);
 		if (ChatHolder.getInstance().hasNewMessage(targetUserId))
-			// ivChatAttention.setVisibility(View.VISIBLE);
-		    ivChatAttention.setAlpha(255);
-		else
-		    // ivChatAttention.setVisibility(View.GONE);
-		    ivChatAttention.setAlpha(0);
-		
+			ivChatAttention.setVisibility(View.VISIBLE);
+		    // ivChatAttention.setAlpha(255);
+		else {
+			ivChatAttention.setVisibility(View.GONE);
+		}
 		double riderLongitude = getItem(position).getLongitude();
 		double riderLatitude = getItem(position).getLatitude();
 		int carsBetween = distCars(mainActivity.getLatitude(), mainActivity.getLongitude(), riderLatitude, riderLongitude);

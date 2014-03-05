@@ -48,6 +48,10 @@ public class ChatHolder {
 		  else
 			  return false;
 	  }
+
+	  public void setNewMessage(String id) {
+		  newMessage.put(id, true);
+	  }
 	  
 	  public void clearMessage(String id) {
 		  newMessage.put(id, false);

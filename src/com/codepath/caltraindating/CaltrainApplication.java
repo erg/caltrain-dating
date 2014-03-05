@@ -19,8 +19,8 @@ public class CaltrainApplication extends Application {
     public void onCreate() {
         super.onCreate();
         // Parse doc says we have to register before initialize
-		Parse.initialize(this, getResources().getString(R.string.parseId), getResources().getString(R.string.parseKey));
 	    ParseObject.registerSubclass(ChatInParse.class);
+		Parse.initialize(this, getResources().getString(R.string.parseId), getResources().getString(R.string.parseKey));
 		ParseFacebookUtils.initialize(getResources().getString(R.string.app_id));
         
         // Create global configuration and initialize ImageLoader with this configuration
