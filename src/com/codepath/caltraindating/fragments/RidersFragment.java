@@ -8,8 +8,10 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.ListView;
+import android.widget.Button;
+import android.widget.RelativeLayout;
 
 import com.codepath.caltraindating.R;
 import com.codepath.caltraindating.adapters.RiderListAdapter;
@@ -17,12 +19,16 @@ import com.codepath.caltraindating.models.Callback;
 import com.codepath.caltraindating.models.Checkin;
 import com.codepath.caltraindating.models.Schedule;
 import com.codepath.caltraindating.models.Train;
+import com.facebook.FacebookException;
+import com.facebook.Session;
+import com.facebook.widget.WebDialog;
+import com.facebook.widget.WebDialog.OnCompleteListener;
 import com.parse.ParseUser;
 
 import eu.erikw.PullToRefreshListView;
 import eu.erikw.PullToRefreshListView.OnRefreshListener;
 
-public class RidersFragment extends Fragment{
+public class RidersFragment extends Fragment implements OnClickListener{
 	Train currentTrain = null;
 	Listener listener = null;
 	PullToRefreshListView lvRiders;
@@ -31,6 +37,9 @@ public class RidersFragment extends Fragment{
 	boolean loaded = false;
 	// XXX: Sorry about static!
 	static ArrayList<Checkin> checkins;
+	RelativeLayout rlRiders;
+	RelativeLayout rlInvite;
+	Button btInvite;
 	
 	public interface Listener{
 		ParseUser getUser();
@@ -56,6 +65,10 @@ public class RidersFragment extends Fragment{
             	lvRiders.onRefreshComplete();
             }
         });		
+        btInvite = (Button)v.findViewById(R.id.btInvite);
+        rlRiders = (RelativeLayout)v.findViewById(R.id.rlRiders);
+        rlInvite = (RelativeLayout)v.findViewById(R.id.rlInvite);
+        btInvite.setOnClickListener(this);
 		return v;		
 	}
 
@@ -90,6 +103,13 @@ public class RidersFragment extends Fragment{
 //					Log.d("tag","got checkin: "+c.getUser().getString("lastName"));
 //					Log.d("tag","got checkin: "+c.getUser().getString("birthday"));
 				}
+				if(checkins == null || checkins.size() == 0){
+					rlRiders.setVisibility(View.GONE);
+					rlInvite.setVisibility(View.VISIBLE);
+				}else{
+					rlRiders.setVisibility(View.VISIBLE);
+					rlInvite.setVisibility(View.GONE);
+				}
 				loaded = true;
 			}
 		});
@@ -121,6 +141,34 @@ public class RidersFragment extends Fragment{
 			if (c.getUser().getObjectId().equals(msgFromUserId)) {
 				riderListAdapter.notifyDataSetChanged();
 			}
+		}
+	}
+	
+	private void sendRequestDialog() {
+	    Bundle params = new Bundle();
+	    params.putString("message", "I'm inviting you to Caltrix, the best way to meet on the train!");
+
+	    WebDialog requestsDialog = (
+	        new WebDialog.RequestsDialogBuilder(getActivity(),
+	            Session.getActiveSession(),
+	            params))
+	            .setOnCompleteListener(new OnCompleteListener() {
+	                @Override
+	                public void onComplete(Bundle values,
+	                    FacebookException error) {   
+	                }
+
+	            })
+	            .build();
+	    requestsDialog.show();
+	}
+
+
+	@Override
+	public void onClick(View v) {
+		int id = v.getId();
+		if(id == R.id.btInvite){
+			sendRequestDialog();
 		}
 	}
 }
