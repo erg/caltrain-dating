@@ -76,6 +76,7 @@ public class RidersFragment extends Fragment implements OnClickListener{
         rlInvite = (RelativeLayout)v.findViewById(R.id.rlInvite);
         btInvite.setOnClickListener(this);
         PushService.subscribe(getActivity(), "CHECK-IN", activity.getClass());
+        v.setBackgroundResource(R.color.AppGrey);
 		return v;		
 	}
 
