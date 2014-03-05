@@ -91,6 +91,14 @@ public class ChatFragment extends Fragment implements OnClickListener {
         }
     }
 
+    public void showProgressBar() {
+	    getActivity().setProgressBarIndeterminateVisibility(true);
+	}
+	    
+	public void hideProgressBar() {
+	  	getActivity().setProgressBarIndeterminateVisibility(false);
+	}
+
     public static ChatFragment newInstance(String ownUserId, String chatToUserId) {
     	ChatFragment fragmentChat = new ChatFragment();
         Bundle args = new Bundle();
@@ -116,6 +124,14 @@ public class ChatFragment extends Fragment implements OnClickListener {
 	    
 	@SuppressWarnings("unchecked")
 	public void initView(View v) {
+        showProgressBar();
+	    riderOwnId = getArguments().getString("OwnUserId");
+	    riderChatToId = getArguments().getString("ChatToUserId");
+	    if (riderOwnId!=null)
+	    	riderOwn = getParseUserById(riderOwnId);
+	    if (riderChatToId!=null)
+	    	riderChatTo = getParseUserById(riderChatToId);
+        hideProgressBar();
 		tvChatToTitle = (TextView)v.findViewById(R.id.tvChatToTitle);
 	    lvChats = (ListView)v.findViewById(R.id.lvChats);
 	    btnSend = (Button)v.findViewById(R.id.btnSendMessage);
@@ -127,15 +143,9 @@ public class ChatFragment extends Fragment implements OnClickListener {
 	    	
 	    etMessage = (EditText)v.findViewById(R.id.etMessage);
  
-	    riderOwnId = getArguments().getString("OwnUserId");
-	    riderChatToId = getArguments().getString("ChatToUserId");
         chatList = ChatHolder.getInstance().retrieve(riderChatToId);
 	    if (chatList==null)
 	    	chatList = ChatHolder.getInstance().initialize(riderChatToId);
-	    if (riderOwnId!=null)
-	    	riderOwn = getParseUserById(riderOwnId);
-	    if (riderChatToId!=null)
-	    	riderChatTo = getParseUserById(riderChatToId);
 	    tvChatToTitle.setText(getUserDisplayName(riderChatTo));
         
 	    adapterChatView = new ChatViewAdapter(getActivity(), chatList);
@@ -160,8 +170,10 @@ public class ChatFragment extends Fragment implements OnClickListener {
 		});
 		*/
 		// Do we need to keep the chat history in Parse?
-		if (chatList.size()==0)
+		if (chatList.size()==0) {
 		     fillChatListByParseQuery();
+			 showProgressBar();
+		}
 	}
 	
 
@@ -205,7 +217,7 @@ public class ChatFragment extends Fragment implements OnClickListener {
     		    			chat.setComingMessage(true);
     		    		}
     		    		chat.setChatMessage(cip.getChatMessage());
-    		    		if (!cip.isRead()) {
+    		    		if (!cip.isRead() && chatFromUserId.equals(riderChatToId)) {
     		    			updateChatRead(cip.getObjectId());
     		    		}
     		    		chatList.add(chat);
@@ -215,6 +227,8 @@ public class ChatFragment extends Fragment implements OnClickListener {
     	        else {
     	            Log.d("DEUG", "Error: " + e.getMessage());
     	        }
+    			hideProgressBar();
+
     	    }
     	});	    	
 	}

@@ -49,13 +49,15 @@ public class Schedule {
 	
 	public static Long getArrivalTime(String train, int destination) {
 		ArrayList<Stop> times = getTrainTimes(train);
+		/*-- Comment out logs
 		for(Stop s : times){
 			if(s == null){
 				Log.e("tag","stop for train is null");
 			}else{
-				// Log.e("tag","stop for train "+s.getStop()+" : "+s.getStationId());
+				Log.e("tag","stop for train "+s.getStop()+" : "+s.getStationId());
 			}
 		}
+		--*/
 		Stop s = times.get(destination);
 		if(s != null){
 			return s.getTimeMillis();
@@ -97,7 +99,7 @@ public class Schedule {
 				}
 			}
 		}
-		Log.e("tag","stops ahead of train: "+t.getId()+",  "+dateString(d)+ " , "+ret.size());
+		//-- Log.e("tag","stops ahead of train: "+t.getId()+",  "+dateString(d)+ " , "+ret.size());
 		return ret;
 	}
 	
@@ -189,7 +191,7 @@ public class Schedule {
 				line += stop.getStop()+", ";
 				}
 			}
-			Log.e("tag","train: "+s+" : "+line);
+			//-- Log.e("tag","train: "+s+" : "+line);
 		}
 	}
 	
@@ -218,7 +220,7 @@ public class Schedule {
 						}
 					}
 				}else{
-					Log.e("tag","train stop: "+split[0]);
+					//-- Log.e("tag","train stop: "+split[0]);
 					stopNames.put(i-1, split[0]);
 					stopNamesList.add(split[0]);
 					for(int j=1;j<split.length;j++){

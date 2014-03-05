@@ -29,6 +29,7 @@ import com.parse.CountCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.PushService;
 
 import eu.erikw.PullToRefreshListView;
 import eu.erikw.PullToRefreshListView.OnRefreshListener;
@@ -74,6 +75,7 @@ public class RidersFragment extends Fragment implements OnClickListener{
         rlRiders = (RelativeLayout)v.findViewById(R.id.rlRiders);
         rlInvite = (RelativeLayout)v.findViewById(R.id.rlInvite);
         btInvite.setOnClickListener(this);
+        PushService.subscribe(getActivity(), "CHECK-IN", activity.getClass());
 		return v;		
 	}
 
@@ -93,7 +95,13 @@ public class RidersFragment extends Fragment implements OnClickListener{
         this.activity = activity;
     }
 
-	private void loadRiders(Train t){
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+	    super.onCreate(savedInstanceState);
+	    getActivity().getActionBar().show();
+	}
+	    
+	public void loadRiders(Train t){
 		showProgressBar();
 		Checkin.getCheckins(listener.getUser(), currentTrain, Schedule.getNow(), new Callback<ArrayList<Checkin>>(){
 			@Override

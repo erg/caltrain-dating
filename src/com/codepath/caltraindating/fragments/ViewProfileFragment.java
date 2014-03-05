@@ -66,6 +66,12 @@ public class ViewProfileFragment extends Fragment {
 			return RidersFragment.checkins.get(position).getUser();
 		}
 	}
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+	    super.onCreate(savedInstanceState);
+	    getActivity().getActionBar().show();
+	}
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -101,6 +107,7 @@ public class ViewProfileFragment extends Fragment {
 
         vpPager.setAdapter(adapterViewPager);
 
+        
 		return view;
 	}
 	
