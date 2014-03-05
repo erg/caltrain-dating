@@ -13,8 +13,9 @@
         android:src="@drawable/ic_launcher" />
 
     <RelativeLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
+        style="@style/bgGrey"
         android:layout_weight="30" >
 
         <TextView
@@ -22,6 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="15dp"
+            style="@style/baseText"
             android:text="Doug123"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textStyle="bold" />
@@ -30,6 +32,7 @@
             android:id="@+id/tvAge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            style="@style/baseText"
             android:layout_alignBaseline="@+id/tvFirstName"
             android:layout_toRightOf="@+id/tvFirstName"
             android:paddingLeft="8dp"
@@ -42,6 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/tvFirstName"
+            style="@style/baseText"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:maxLines="100"
