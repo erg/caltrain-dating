@@ -57,7 +57,8 @@
         android:layout_alignLeft="@+id/linearLayout1"
         android:layout_below="@+id/linearLayout1"
         android:gravity="center"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+        android:textColor="#666666"
+        android:textSize="12sp" />
 
     <Button
         android:id="@+id/btMatch"

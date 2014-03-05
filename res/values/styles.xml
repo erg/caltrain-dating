@@ -73,7 +73,7 @@
 
     <style name="chatTime">
 	    <item name="android:padding">2dp</item>    
-		<item name="android:textColor">#222222</item>   
+		<item name="android:textColor">#666666</item>   
 		<item name="android:textSize">12sp</item>      
 	</style>
   

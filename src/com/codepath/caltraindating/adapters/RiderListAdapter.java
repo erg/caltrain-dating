@@ -103,11 +103,13 @@ public class RiderListAdapter extends ArrayAdapter<Checkin> {
 				tvDist.setText(" prob. in the same car");
 			else if (carsBetween==2)
 				tvDist.setText(" prob. 1 car away");
+			else if (carsBetween > 10)
+				tvDist.setText(" prob. not on the same train");
 			else
 				tvDist.setText(" prob. " + (carsBetween-1) + " cars away");
 		}
 		else
-			tvDist.setText(" can't detect dist.");
+			tvDist.setText("");
 			
 		Button btMatch = (Button) convertView.findViewById(R.id.btMatch);
 		btMatch.setOnClickListener(new OnClickListener() {
@@ -146,9 +148,9 @@ public class RiderListAdapter extends ArrayAdapter<Checkin> {
 	    int meterConversion = 1609;
 
 	    float distance = (float) (dist * meterConversion);
-	    Log.d("DEBUG", "distance=" + distance);
+	    // Log.d("DEBUG", "distance=" + distance);
 	    
-	    return (int) (distance / 15.0f) + 1;
+	    return (int) (distance / 20.0f) + 1;
 	}
 	
 }

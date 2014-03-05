@@ -80,6 +80,7 @@ public class ChatViewAdapter extends BaseAdapter {
 	    
 	    viewHolder.tvChatTime.setText(chat.getChatTime());
 	    viewHolder.tvChatName.setText(chat.getChatName());
+	    viewHolder.tvChatName.setVisibility(View.GONE);
 	    viewHolder.tvChatMessage.setText(chat.getChatMessage());
 	    if (chat.getChatImage()!=null)
 		    ImageLoader.getInstance().displayImage(chat.getChatImage(), viewHolder.ivChatImage);
