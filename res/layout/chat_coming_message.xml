@@ -32,7 +32,6 @@
 		        android:layout_width="52dp"
 		        android:layout_height="52dp"
 		        android:clickable="true"
-		        android:onClick="head_xiaohei"
 		        android:layout_alignParentLeft="true" 
                 android:layout_alignParentTop="true" 
 		        android:background="@drawable/ic_rider_default"/>
