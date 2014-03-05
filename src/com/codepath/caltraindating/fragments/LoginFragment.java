@@ -2,6 +2,7 @@ package com.codepath.caltraindating.fragments;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -198,7 +199,10 @@ public class LoginFragment extends Fragment implements OnClickListener {
 		return mEx.new Task() {
 			@Override
 			public void start() {
-				currentUser.removeAll(key, currentUser.getList(key));
+				List<String> photoList = currentUser.getList(key);
+				if(photoList != null && photoList.size()>0){
+					currentUser.removeAll(key, photoList);
+				}
 				currentUser.saveInBackground(new SaveCallback() {
 					@Override
 					public void done(ParseException arg0) {
