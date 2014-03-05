@@ -77,7 +77,6 @@ public class RidersFragment extends Fragment implements OnClickListener{
 		return v;		
 	}
 
-
     public void showProgressBar() {
 	    getActivity().setProgressBarIndeterminateVisibility(true);
 	}
