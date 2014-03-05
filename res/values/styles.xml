@@ -64,6 +64,13 @@
         <item name="android:background">@color/AppGrey</item>
     </style>
 
+    <style name="ptr_text">
+
+        <!-- Change the text style and color for pull to refresh-->
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">#cccccc</item>
+    </style>
+    
     <!-- style name="chatTime">
 	    <item name="android:padding">2dp</item>    
 		<item name="android:textColor">#ffffff</item>   

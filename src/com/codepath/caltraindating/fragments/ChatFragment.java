@@ -26,7 +26,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.codepath.caltraindating.ChatHolder;
-import com.codepath.caltraindating.MainActivity;
 import com.codepath.caltraindating.R;
 import com.codepath.caltraindating.adapters.ChatViewAdapter;
 import com.codepath.caltraindating.models.ChatInParse;
@@ -36,10 +35,6 @@ import com.parse.ParseException;
 import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-
-import android.view.View.OnKeyListener;
-import android.view.View;
-import android.view.KeyEvent;
 
 public class ChatFragment extends Fragment implements OnClickListener {
 
@@ -98,7 +93,8 @@ public class ChatFragment extends Fragment implements OnClickListener {
     
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
-	    getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN); 
+	    getActivity().getActionBar().hide();
+	    // getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN); 
 	}
 	    
 	@Override
@@ -149,8 +145,8 @@ public class ChatFragment extends Fragment implements OnClickListener {
 		});
 		*/
 		// Do we need to keep the chat history in Parse?
-		// if (chatList.size()==0)
-		//     fillChatListByParseQuery();
+		if (chatList.size()==0)
+		     fillChatListByParseQuery();
 	}
 	
 
@@ -194,6 +190,10 @@ public class ChatFragment extends Fragment implements OnClickListener {
     		    			chat.setComingMessage(true);
     		    		}
     		    		chat.setChatMessage(cip.getChatMessage());
+    		    		if (!cip.isRead()) {
+    		    			cip.setRead(true);
+    		    			cip.saveInBackground();
+    		    		}
     		    		chatList.add(chat);
     		    		adapterChatView.notifyDataSetChanged();
     		    	}	    	            // Access the array of results here

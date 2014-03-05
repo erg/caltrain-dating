@@ -37,14 +37,14 @@ public class Schedule {
 	
 	
 	public static Date getNow(){
-		return new Date();
-		/*simulates a 7 am-ish checkin
+		// return new Date();
+		// simulates a 7 am-ish checkin
 		Date d = new Date();
 		Calendar c = Calendar.getInstance();
 		c.setTime(d);
 		c.set(Calendar.HOUR, 9);
 		c.set(Calendar.AM_PM, Calendar.AM);
-		return c.getTime();*/
+		return c.getTime();
 	}
 	
 	public static Long getArrivalTime(String train, int destination) {

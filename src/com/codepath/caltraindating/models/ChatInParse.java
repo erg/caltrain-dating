@@ -20,7 +20,7 @@ public class ChatInParse extends ParseObject {
         setRiderChatTo(riderChatTo);
         setChatTime(chatTime);
         setChatMessage(chatMessage);
-        put("isSent", false);
+        // put("isSent", false);
         put("isRead", false);
       }
 
@@ -55,4 +55,13 @@ public class ChatInParse extends ParseObject {
     public void setRiderChatTo(ParseUser riderChatTo) {
 	    put("riderChatTo", riderChatTo);
 	}  
+    
+    public Boolean isRead() {
+        return getBoolean("isRead");
+    }
+
+    public void setRead(Boolean isRead) {
+        put("isRead", isRead);
+    }
+    
 }
