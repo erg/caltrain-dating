@@ -40,19 +40,6 @@
             android:textAppearance="?android:attr/textAppearanceLarge" />
     </LinearLayout>
 
-    <Button
-        android:id="@+id/btMatch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/ivProfileThumbnail"
-        android:layout_alignParentRight="true"
-        android:gravity="center_vertical|center_horizontal"
-        android:paddingBottom="20dp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:paddingTop="20dp"
-        android:text="Chat" />
-
     <ImageView
         android:id="@+id/ivChatAttention"
         android:layout_width="40dp"
@@ -71,5 +58,19 @@
         android:layout_below="@+id/linearLayout1"
         android:gravity="center"
         android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <Button
+        android:id="@+id/btMatch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:gravity="center_vertical"
+        android:layout_centerVertical="true"
+        android:paddingBottom="10dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="10dp"
+        android:text="Chat" />
 
 </RelativeLayout>

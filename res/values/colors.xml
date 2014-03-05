@@ -143,4 +143,5 @@
  <color name="AppGrey">#111111</color>
  <color name="AppWhite">#EEEEEE</color>
  <color name="AppRed">#CC0032</color>
+ <color name="AppLightGrey">#444444</color>
 </resources>
