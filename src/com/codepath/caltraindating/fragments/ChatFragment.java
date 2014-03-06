@@ -218,9 +218,9 @@ public class ChatFragment extends Fragment implements OnClickListener {
     		    		}
     		    		chat.setChatMessage(cip.getChatMessage());
     		    		Log.d("DEBUG", "cip=" + cip.getObjectId() + ", chatto=" + riderChatToId + ", msg from=" + chatFromUserId);
-    		    		
+    		    		if (!cip.isRead()) {
     		    			updateChatRead(cip.getObjectId());
-    		    		
+    		    		}
     		    		chatList.add(chat);
     		    		adapterChatView.notifyDataSetChanged();
     		    	}	    	            // Access the array of results here
