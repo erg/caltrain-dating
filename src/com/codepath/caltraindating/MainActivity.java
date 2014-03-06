@@ -16,7 +16,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
@@ -24,7 +23,9 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.codepath.caltraindating.fragments.BlurbFragment;
@@ -329,6 +330,11 @@ public class MainActivity extends FragmentActivity
 		this.blurb = blurb;
 		currentUser.put("blurb", blurb);
 		currentUser.saveInBackground();
+		
+		View v = findViewById(android.R.id.content);
+	    final InputMethodManager imm = (InputMethodManager) getApplication().getSystemService(Context.INPUT_METHOD_SERVICE);
+	    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
 	}
 	    
     public String getBlurb() {

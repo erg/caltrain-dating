@@ -33,6 +33,7 @@ public class BlurbFragment extends Fragment {
 		etBlurb = (EditText) v.findViewById(R.id.etBlurb);
 		etBlurb.setText(listener.getBlurb());
 		etBlurb.setSelection(etBlurb.getText().length());
+		
 		btCancel = (Button) v.findViewById(R.id.btCancel);
 		btSave = (Button) v.findViewById(R.id.btSave);
 
