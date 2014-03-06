@@ -61,6 +61,7 @@ public class MainActivity extends FragmentActivity
 	ParseUser currentUser = null;
 	String currentUserId = null;
     BroadcastReceiver pushReceiver;
+    String blurb = "";
         
     double longitude;
     double latitude;
@@ -324,7 +325,14 @@ public class MainActivity extends FragmentActivity
 	@Override
 	public void saveBlurb(String blurb) {
 		Log.d("DEBUG", "Saving blurb: " + blurb);
+		this.blurb = blurb;
+		currentUser.put("blurb", blurb);
+		currentUser.saveInBackground();
 	}
+	    
+    public String getBlurb() {
+    	return this.blurb;
+    }
 	
 	// Must register here according to:
 	// http://stackoverflow.com/questions/7887169/android-when-to-register-unregister-broadcast-receivers-created-in-an-activity
