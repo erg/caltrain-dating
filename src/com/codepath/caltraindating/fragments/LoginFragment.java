@@ -177,7 +177,6 @@ public class LoginFragment extends Fragment implements OnClickListener {
 											user.getLastName());
 									currentUser.put("birthday",
 											user.getBirthday());
-									currentUser.put("blurb", listener.getBlurb());
 									currentUser
 											.saveInBackground(new SaveCallback() {
 												@Override
