@@ -15,6 +15,7 @@ public class BlurbFragment extends Fragment {
 
 	public interface Listener {
 		public void saveBlurb(String blurb);
+		public String getBlurb();
 		public void switchToRiders();
 	}
 
@@ -30,6 +31,7 @@ public class BlurbFragment extends Fragment {
 		View v = inflater.inflate(R.layout.fragment_blurb, container, false);
 
 		etBlurb = (EditText) v.findViewById(R.id.etBlurb);
+		etBlurb.setText(listener.getBlurb());
 		btCancel = (Button) v.findViewById(R.id.btCancel);
 		btSave = (Button) v.findViewById(R.id.btSave);
 

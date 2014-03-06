@@ -127,6 +127,7 @@ public class MainActivity extends FragmentActivity
 		} catch (Exception e) {}
 		
 		currentUser = ParseUser.getCurrentUser();
+		this.blurb = currentUser.getString("blurb");
 
 		if (currentUser != null) {
 			currentUserId = currentUser.getObjectId();
